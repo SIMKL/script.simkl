@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="LogIn">
+        <setting type="lsep" label="This will open a browser window, please log-in"/>
+        <setting label="Please click to log in" type="action" action="RunScript(my.addon.id, downloadreport)"/>
+    </category>
+    <setting type="sep"/>
+    <category label="Options">
+        <setting label="Other options" type="lsep"/>
+        <setting label="Sync library" type="bool" id="synclib" default="false" enable="false"/>
+        <setting label="Scrobbler" type="lsep"/>
+        <setting label="Auto-scrobble" type="bool" id="autoscrobble" default="true"/>
+        <setting label="Scrobble at percentage" type="slider" id="scr-pct" default="70" range="0,100" option="percent" enable="gt(-1,-2)" />
+        <setting label="Watching percentage" type="slider"    id="sct-w-pct" default="10" range="0,100" option="percent"/>
+    </category>
+</settings>
