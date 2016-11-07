@@ -8,15 +8,26 @@ Creator: David Davó <david@ddavo.me>
 import time, sys
 import xbmcaddon
 import xbmc
+from resources.lib import interface
+from resources.lib import simklapi as API
 
 simkl_addon = xbmcaddon.Addon()
 autoscrobble = simkl_addon.getSetting("autoscrobble")
 
+def login():
+    xbmc.log("Login clicked")
+
 if __name__ == "__main__":
+    xbmc.log("Simkl | "+ str(sys.argv), level=xbmc.LOGDEBUG)
     monitor = xbmc.Monitor()
     player  = xbmc.Player()
     #player.onPlayBackStarted() #Now call a function that marks movie as "watching" or serie as "tracking"
     #Remember: if getTime() is more than x% scrobble file
+
+    if not API.api.is_user_logged():
+        interface.notify("Please log in")
+    else:
+        interface.notify("Hello again {}".format(API.api.USERSETTINGS["user"]["name"]))
 
     while not monitor.abortRequested():
         if monitor.waitForAbort(10):

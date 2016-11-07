@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="service.simkl"
+<addon id="script.service.simkl"
        name="Simkl TV Tracker Dev"
        version="0.0.1"
-       provider-name="David Davó">
+       provider-name="David Davó / Simkl">
   <requires>
     <import addon="xbmc.python" version="3.4.0"/>
+    <import addon="script.module.simplejson"/>
   </requires>
   <extension point="xbmc.service" library="service.py" start="login" />
   <extension point="xbmc.addon.metadata">
@@ -18,5 +19,6 @@
     <assets>
       <icon>resources/icon.png</icon>
     </assets>
+    <language>en es</language>
   </extension>
 </addon>
