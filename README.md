@@ -1,4 +1,4 @@
 # Kodi
 
 ## TODO:
-- [ ] Add LICENSE.TXT
+- [x] Add LICENSE.TXT
