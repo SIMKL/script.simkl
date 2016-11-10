@@ -11,6 +11,6 @@
         <setting label="Scrobbler" type="lsep"/>
         <setting label="Auto-scrobble" type="bool" id="autoscrobble" default="true"/>
         <setting label="Scrobble at percentage" type="slider" id="scr-pct" default="70" range="0,100" option="percent" enable="gt(-1,-2)" />
-        <setting label="Watching percentage" type="slider"    id="sct-w-pct" default="10" range="0,100" option="percent"/>
+        <setting label="Checkin percentage"     type="slider" id="sct-w-pct" default="10" range="0,100" option="percent"/>
     </category>
 </settings>

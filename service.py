@@ -8,7 +8,7 @@ Creator: David Davó <david@ddavo.me>
 import time, sys
 import xbmcaddon
 import xbmc
-from resources.lib import interface
+from resources.lib import interface, engine
 from resources.lib import simklapi as API
 
 simkl_addon = xbmcaddon.Addon()
@@ -20,8 +20,10 @@ def login():
 if __name__ == "__main__":
     xbmc.log("Simkl | "+ str(sys.argv), level=xbmc.LOGDEBUG)
     monitor = xbmc.Monitor()
-    player  = xbmc.Player()
-    #player.onPlayBackStarted() #Now call a function that marks movie as "watching" or serie as "tracking"
+
+    player  = engine.Player()
+    player.addon = simkl_addon
+    eng     = engine.Engine(API.api, player)
     #Remember: if getTime() is more than x% scrobble file
 
     if not API.api.is_user_logged():
@@ -33,4 +35,5 @@ if __name__ == "__main__":
         if monitor.waitForAbort(10):
             break
         elif player.isPlaying():
-            xbmc.log("Simkl:" + player.getPlayingFile(), level=xbmc.LOGDEBUG)
+            #xbmc.log("Simkl: " + player.getPlayingFile(), level=xbmc.LOGDEBUG)
+            pass
