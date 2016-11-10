@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
-import sys, os
+import sys, os, time
 import urllib
 import request
 try:
@@ -70,10 +70,10 @@ class API:
 
     ### SCROBBLING OR CHECKIN
 
-    def checkin(self, filename): #OR IDMB, member: only works with movies
+    def watched(self, filename): #OR IDMB, member: only works with movies
+        date = time.strftime('%Y-%m-%d %H:%M:%S')
         if filename[:2] == "tt":
             imdb = filename
-            values = {"movie":{"ids":{"imdb":filename}}}
         else:
             xbmc.log("Simkl: Filename - {}".format(filename))
             values = {"file":filename}
@@ -83,12 +83,14 @@ class API:
             r = json.loads(r1)
             xbmc.log("Simkl: Scrobbling: {}".format(r))
 
-            values = {r["type"]:{"ids":r[r["type"]]["ids"]}}
+        values = {"movies":[{
+            "ids":{"imdb":filename},
+            "watched_at": date
+        }]}
 
-        #NOW THE CHECKIN
         xbmc.log("Simkl: values {}".format(values))
         values = json.dumps(values)
-        self.con.request("GET", "/checkin/", body=values, headers=headers)
+        self.con.request("GET", "/sync/history/", body=values, headers=headers)
         xbmc.log("Simkl: {}".format(self.con.getresponse().read().decode("utf-8")))
 
 

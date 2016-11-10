@@ -31,16 +31,16 @@ class Player(xbmc.Player):
             #Scrobble from filename only for testing purposes or error of other methods
 
             percentage = 100 * self.getTime() / self.getTotalTime()
-            pctconfig  = int(self.addon.getSetting("sct-w-pct"))
+            pctconfig  = int(self.addon.getSetting("scr-pct"))
             
             if percentage > pctconfig:
                 xbmc.log("Simkl: Ready to scrobble {}".format(movie.getTitle()))
                 if imdb == "":
                     xbmc.log("Simkl: No imdb - Fname: {}".format(fname))
-                    self.api.checkin(fname)
+                    self.api.watched(fname)
                 else:
                     xbmc.log("Simkl: IMDB: " + str(imdb))
-                    self.api.checkin(imdb)
+                    self.api.watched(imdb)
 
         except RuntimeError:
             pass
