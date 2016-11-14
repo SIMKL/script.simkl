@@ -46,6 +46,14 @@ class API:
             rdic["user_code"], self.check_login, log, rdic["expires_in"],
             rdic["interval"], self)
 
+    def set_atoken(self, token):
+        global ATOKEN
+        with open(os.path.dirname(os.path.realpath(__file__)).strip("lib") + "data/user", "w") as f:
+            f.write(token)
+        ATOKEN = token
+        headers["authorization"] = token
+        self.token = token
+
     def check_login(self, ucode, log): #Log is the connection
         global atoken
         url = "/oauth/pin/" + ucode + "?client_id=" + APIKEY
@@ -53,7 +61,7 @@ class API:
         r = json.loads(log.getresponse().read().decode("utf-8"))
         xbmc.log("Simkl:" + str(r))
         if r["result"] == "OK":
-            set_atoken(r["access_token"])
+            self.set_atoken(r["access_token"])
             log.request("GET", "/users/settings", headers=headers)
             r = json.loads(log.getresponse().read().decode("utf-8"))
             self.USERSETTINGS = r
@@ -70,10 +78,14 @@ class API:
 
     ### SCROBBLING OR CHECKIN
 
-    def watched(self, filename): #OR IDMB, member: only works with movies
+    def watched(self, filename, mediatype): #OR IDMB, member: only works with movies
         date = time.strftime('%Y-%m-%d %H:%M:%S')
+        mediadict = {"movie": "movies", "episode":"episodes"}
+        media = mediadict[mediatype]
+        tosend = {}
         if filename[:2] == "tt":
             imdb = filename
+            toappend = {"ids":{"imdb":filename}, "watched_at":date}
         else:
             xbmc.log("Simkl: Filename - {}".format(filename))
             values = {"file":filename}
@@ -81,26 +93,16 @@ class API:
             self.con.request("GET", "/search/file/", body=values, headers=headers)
             r1 = self.con.getresponse().read().decode("utf-8")
             r = json.loads(r1)
-            xbmc.log("Simkl: Scrobbling: {}".format(r))
+            toappend = {"ids": r[mediatype]["ids"], "watched_at":date}
 
-        values = {"movies":[{
-            "ids":{"imdb":filename},
-            "watched_at": date
-        }]}
+        tosend[media] = []
+        tosend[media].append(toappend)
+        tosend = json.dumps(tosend)
 
-        xbmc.log("Simkl: values {}".format(values))
-        values = json.dumps(values)
-        self.con.request("GET", "/sync/history/", body=values, headers=headers)
+        xbmc.log("Simkl: values {}".format(tosend))
+        self.con.request("GET", "/sync/history/", body=tosend, headers=headers)
         xbmc.log("Simkl: {}".format(self.con.getresponse().read().decode("utf-8")))
 
-
-def set_atoken(token):
-    global ATOKEN
-    with open(os.path.dirname(os.path.realpath(__file__)).strip("lib") + "data/user", "w") as f:
-        f.write(token)
-    ATOKEN = token
-    headers["authorization"] = token
-    self.token = token
 
 api = API()
 if __name__ == "__main__":

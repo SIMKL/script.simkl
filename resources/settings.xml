@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
     <category label="LogIn">
-        <setting type="lsep" label="This will open a browser window, please log-in"/>
         <setting label="Please click to log in" type="action" action="RunScript(special://xbmc/addons/script.server.simkl/resources/lib/simklapi.py, login, special://xbmc/)"/>
     </category>
     <setting type="sep"/>
