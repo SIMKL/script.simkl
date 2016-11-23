@@ -29,8 +29,9 @@ if __name__ == "__main__":
         interface.notify("Hello again {}".format(API.api.USERSETTINGS["user"]["name"]))
 
     while not monitor.abortRequested():
-        if monitor.waitForAbort(10):
+        if monitor.waitForAbort(60):
             break
         elif player.isPlaying():
             #xbmc.log("Simkl: " + player.getPlayingFile(), level=xbmc.LOGDEBUG)
+            player.onPlayBackStopped()
             pass

@@ -11,6 +11,42 @@ class Engine:
         self.player = player
         player.engine = self
         player.api    = api
+        self.synclibrary()
+
+    def synclibrary(self):
+        ### UPLOAD ###
+
+        kodilibrary = xbmc.executeJSONRPC(json.dumps({
+          "jsonrpc": "2.0",
+          "method": "VideoLibrary.GetMovies",
+          "params": {
+            
+            "limits": {
+              "start": 0,
+              "end": 1000
+            },
+            "properties": [
+              "playcount",
+              "imdbnumber",
+              "file",
+              "lastplayed"
+            ],
+            "sort": {
+              "order": "ascending",
+              "method": "label",
+              "ignorearticle": True
+            }
+          },
+          "id": "libMovies"
+        }))
+        xbmc.log("Simkl: Ret: {}".format(kodilibrary))
+        kodilibrary = json.loads(kodilibrary)
+        for movie in kodilibrary["result"]["movies"]:
+
+            if movie["playcount"] > 0:
+                imdb = movie["imdbnumber"]
+                date = movie["lastplayed"]
+                self.api.watched(imdb, "movie", date)
 
 class Player(xbmc.Player):
     def __init__(self):
@@ -34,7 +70,6 @@ class Player(xbmc.Player):
         self.onPlayBackStopped()
     def onPlayBackResumed(self):
         self.onPlayBackStopped()
-
     def onPlayBackStopped(self):
         try:
             movie = self.getVideoInfoTag()

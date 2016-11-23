@@ -1,10 +1,18 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-import xbmc, xbmcgui
+import xbmc, xbmcgui, xbmcaddon
 import time
-import simklapi
 tmp = time.time()
 
+__addon__ = xbmcaddon.Addon("script.service.simkl")
+__icon__ = __addon__.getAddonInfo("icon")
+
+not_dialog = xbmcgui.Dialog()
+def notify(txt="Test"):
+    not_dialog.notification("Simkl", txt, __icon__) #Put an icon
+
+import simklapi
+    
 class loginDialog:
     def __init__(self, url, pin, check_login, log, exp=900, inter=5, api=None):
         API = api
@@ -31,7 +39,3 @@ class loginDialog:
             if self.dialog.iscanceled() or cnt >= exp:
                 waiting = False
                 #raise Not logged in
-
-not_dialog = xbmcgui.Dialog()
-def notify(txt="Test"):
-    not_dialog.notification("Simkl", txt) #Put an icon

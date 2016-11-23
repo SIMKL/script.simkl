@@ -29,9 +29,15 @@ class API:
         with open(os.path.dirname(os.path.realpath(__file__)).strip("lib") + "data/user", "r") as f:
             self.token = f.readline().strip("\n")
             headers["authorization"] = self.token
-        self.con = httplib.HTTPSConnection("api.simkl.com")
-        self.con.request("GET", "/users/settings", headers=headers)
-        self.USERSETTINGS = json.loads(self.con.getresponse().read().decode("utf-8"))
+        try:
+            self.con = httplib.HTTPSConnection("api.simkl.com")
+            self.con.request("GET", "/users/settings", headers=headers)
+            self.USERSETTINGS = json.loads(self.con.getresponse().read().decode("utf-8"))
+            self.internet = True
+        except Exception:
+            xbmc.log("Simkl: {}".format("No INTERNET"))
+            interface.notify("You don't have internet")
+            self.internet = False
 
     def login(self):
         url = "/oauth/pin?client_id="
@@ -78,30 +84,33 @@ class API:
 
     ### SCROBBLING OR CHECKIN
 
-    def watched(self, filename, mediatype): #OR IDMB, member: only works with movies
-        date = time.strftime('%Y-%m-%d %H:%M:%S')
-        mediadict = {"movie": "movies", "episode":"episodes"}
-        media = mediadict[mediatype]
-        tosend = {}
-        if filename[:2] == "tt":
-            imdb = filename
-            toappend = {"ids":{"imdb":filename}, "watched_at":date}
-        else:
-            xbmc.log("Simkl: Filename - {}".format(filename))
-            values = {"file":filename}
-            values = json.dumps(values)
-            self.con.request("GET", "/search/file/", body=values, headers=headers)
-            r1 = self.con.getresponse().read().decode("utf-8")
-            r = json.loads(r1)
-            toappend = {"ids": r[mediatype]["ids"], "watched_at":date}
+    def watched(self, filename, mediatype, date=time.strftime('%Y-%m-%d %H:%M:%S')): #OR IDMB, member: only works with movies
+        try:
+            mediadict = {"movie": "movies", "episode":"episodes"}
+            media = mediadict[mediatype]
+            tosend = {}
+            if filename[:2] == "tt":
+                imdb = filename
+                toappend = {"ids":{"imdb":filename}, "watched_at":date}
+            else:
+                con = httplib.HTTPSConnection("api.simkl.com")
+                xbmc.log("Simkl: Filename - {}".format(filename))
+                values = {"file":filename}
+                values = json.dumps(values)
+                self.con.request("GET", "/search/file/", body=values, headers=headers)
+                r1 = self.con.getresponse().read().decode("utf-8")
+                r = json.loads(r1)
+                toappend = {"ids": r[mediatype]["ids"], "watched_at":date}
 
-        tosend[media] = []
-        tosend[media].append(toappend)
-        tosend = json.dumps(tosend)
+            tosend[media] = []
+            tosend[media].append(toappend)
+            tosend = json.dumps(tosend)
 
-        xbmc.log("Simkl: values {}".format(tosend))
-        self.con.request("GET", "/sync/history/", body=tosend, headers=headers)
-        xbmc.log("Simkl: {}".format(self.con.getresponse().read().decode("utf-8")))
+            xbmc.log("Simkl: values {}".format(tosend))
+            self.con.request("GET", "/sync/history/", body=tosend, headers=headers)
+            xbmc.log("Simkl: {}".format(self.con.getresponse().read().decode("utf-8")))
+        except httplib.BadStatusLine:
+            xbmc.log("Simkl: {}".format("ERROR: httplib.BadStatusLine"))
 
 
 api = API()
