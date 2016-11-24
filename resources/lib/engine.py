@@ -41,12 +41,13 @@ class Engine:
         }))
         xbmc.log("Simkl: Ret: {}".format(kodilibrary))
         kodilibrary = json.loads(kodilibrary)
-        for movie in kodilibrary["result"]["movies"]:
+        if kodilibrary["result"]["limits"]["total"] > 0:
+            for movie in kodilibrary["result"]["movies"]:
 
-            if movie["playcount"] > 0:
-                imdb = movie["imdbnumber"]
-                date = movie["lastplayed"]
-                self.api.watched(imdb, "movie", date)
+                if movie["playcount"] > 0:
+                    imdb = movie["imdbnumber"]
+                    date = movie["lastplayed"]
+                    self.api.watched(imdb, "movie", date)
 
 class Player(xbmc.Player):
     def __init__(self):
