@@ -97,7 +97,7 @@ class API:
                 xbmc.log("Simkl: Filename - {}".format(filename))
                 values = {"file":filename}
                 values = json.dumps(values)
-                self.con.request("GET", "/search/file/", body=values, headers=headers)
+                con.request("GET", "/search/file/", body=values, headers=headers)
                 r1 = self.con.getresponse().read().decode("utf-8")
                 r = json.loads(r1)
                 toappend = {"ids": r[mediatype]["ids"], "watched_at":date}
@@ -107,10 +107,11 @@ class API:
             tosend = json.dumps(tosend)
 
             xbmc.log("Simkl: values {}".format(tosend))
-            self.con.request("GET", "/sync/history/", body=tosend, headers=headers)
+            con.request("GET", "/sync/history/", body=tosend, headers=headers)
             xbmc.log("Simkl: {}".format(self.con.getresponse().read().decode("utf-8")))
         except httplib.BadStatusLine:
             xbmc.log("Simkl: {}".format("ERROR: httplib.BadStatusLine"))
+        except 
 
 
 api = API()
