@@ -86,20 +86,21 @@ class API:
 
     def watched(self, filename, mediatype, date=time.strftime('%Y-%m-%d %H:%M:%S')): #OR IDMB, member: only works with movies
         try:
-            mediadict = {"movie": "movies", "episode":"episodes"}
+            con = httplib.HTTPSConnection("api.simkl.com")
+            mediadict = {"movie": "movies", "episode":"episodes", "unknown":"episodes"}
             media = mediadict[mediatype]
             tosend = {}
             if filename[:2] == "tt":
                 imdb = filename
                 toappend = {"ids":{"imdb":filename}, "watched_at":date}
             else:
-                con = httplib.HTTPSConnection("api.simkl.com")
                 xbmc.log("Simkl: Filename - {}".format(filename))
                 values = {"file":filename}
                 values = json.dumps(values)
                 con.request("GET", "/search/file/", body=values, headers=headers)
-                r1 = self.con.getresponse().read().decode("utf-8")
+                r1 = con.getresponse().read().decode("utf-8")
                 r = json.loads(r1)
+                xbmc.log("Simkl: {}".format(r))
                 toappend = {"ids": r[mediatype]["ids"], "watched_at":date}
 
             tosend[media] = []
@@ -108,11 +109,9 @@ class API:
 
             xbmc.log("Simkl: values {}".format(tosend))
             con.request("GET", "/sync/history/", body=tosend, headers=headers)
-            xbmc.log("Simkl: {}".format(self.con.getresponse().read().decode("utf-8")))
+            xbmc.log("Simkl: {}".format(con.getresponse().read().decode("utf-8")))
         except httplib.BadStatusLine:
             xbmc.log("Simkl: {}".format("ERROR: httplib.BadStatusLine"))
-        except 
-
 
 api = API()
 if __name__ == "__main__":

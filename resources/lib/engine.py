@@ -68,8 +68,13 @@ class Player(xbmc.Player):
     def onPlayBackStarted(self):
         self.onPlayBackStopped()
     def onPlayBackSeek(self, *args):
-        self.onPlayBackStopped()
+        #self.onPlayBackStopped()
+        pass
     def onPlayBackResumed(self):
+        #self.onPlayBackStopped()
+        pass
+    def onPlayBackEnded(self):
+        xbmc.log("Simkl: ONPLAYBACKENDED")
         self.onPlayBackStopped()
     def onPlayBackStopped(self):
         try:

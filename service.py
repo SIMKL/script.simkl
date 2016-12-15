@@ -15,6 +15,7 @@ simkl_addon = xbmcaddon.Addon()
 autoscrobble = simkl_addon.getSetting("autoscrobble")
 
 if __name__ == "__main__":
+    xbmc.log("Simkl | Python Version: " + str(sys.version))
     xbmc.log("Simkl | "+ str(sys.argv), level=xbmc.LOGDEBUG)
     monitor = xbmc.Monitor()
 
