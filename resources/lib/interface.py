@@ -6,6 +6,7 @@ tmp = time.time()
 
 __addon__ = xbmcaddon.Addon("script.service.simkl")
 __icon__ = __addon__.getAddonInfo("icon")
+xbmc.log("Simkl: Icon: "+str(__icon__))
 
 not_dialog = xbmcgui.Dialog()
 def notify(txt="Test"):
@@ -15,6 +16,7 @@ import simklapi
     
 class loginDialog:
     def __init__(self, url, pin, check_login, log, exp=900, inter=5, api=None):
+        #TODO: If user is loged in, show a confirmation dialog
         API = api
         self.dialog = xbmcgui.DialogProgress()
         self.dialog.create("Simkl login", 

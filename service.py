@@ -15,6 +15,7 @@ simkl_addon = xbmcaddon.Addon()
 autoscrobble = simkl_addon.getSetting("autoscrobble")
 
 if __name__ == "__main__":
+    xbmc.log("Simkl dir: " + str(xbmc.translatePath("special://home")))
     xbmc.log("Simkl | Python Version: " + str(sys.version))
     xbmc.log("Simkl | "+ str(sys.argv), level=xbmc.LOGDEBUG)
     monitor = xbmc.Monitor()
@@ -25,7 +26,7 @@ if __name__ == "__main__":
     #Remember: if getTime() is more than x% scrobble file
 
     if not API.api.is_user_logged():
-        interface.notify("Please log in")
+        interface.notify("Please Log In in addon settings")
     else:
         interface.notify("Hello again {}".format(API.api.USERSETTINGS["user"]["name"]))
 

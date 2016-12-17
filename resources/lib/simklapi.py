@@ -14,6 +14,14 @@ import interface
 import httplib
 
 REDIRECT_URI = "http://simkl.com"
+USERFILE     = xbmc.translatePath("special://profile/simkl_key")
+if not os.path.exists(USERFILE):
+    with open(USERFILE, "w") as f:
+        f.write("")
+else:
+    with open(USERFILE, "r") as f:
+        print(xbmc.log("Simkl Userfile " + str(f.read())))
+
 with open(os.path.dirname(os.path.realpath(__file__)).strip("lib") + "data/apikey") as f:
     d = json.loads(f.read())
     APIKEY = d["apikey"]
@@ -26,7 +34,7 @@ headers = {"Content-Type": "application-json",
 
 class API:
     def __init__(self):
-        with open(os.path.dirname(os.path.realpath(__file__)).strip("lib") + "data/user", "r") as f:
+        with open(USERFILE, "r") as f:
             self.token = f.readline().strip("\n")
             headers["authorization"] = self.token
         try:
@@ -34,6 +42,8 @@ class API:
             self.con.request("GET", "/users/settings", headers=headers)
             self.USERSETTINGS = json.loads(self.con.getresponse().read().decode("utf-8"))
             self.internet = True
+            if not os.path.exists(USERFILE):
+                api.login()
         except Exception:
             xbmc.log("Simkl: {}".format("No INTERNET"))
             interface.notify("You don't have internet")
@@ -54,7 +64,7 @@ class API:
 
     def set_atoken(self, token):
         global ATOKEN
-        with open(os.path.dirname(os.path.realpath(__file__)).strip("lib") + "data/user", "w") as f:
+        with open(USERFILE, "w") as f:
             f.write(token)
         ATOKEN = token
         headers["authorization"] = token
@@ -77,7 +87,8 @@ class API:
             return False
 
     def is_user_logged(self):
-        if self.token == None:
+        if self.token == "":
+            xbmc.log("Simkl: User not logged in")
             return False
         else:
             return True
@@ -85,33 +96,36 @@ class API:
     ### SCROBBLING OR CHECKIN
 
     def watched(self, filename, mediatype, date=time.strftime('%Y-%m-%d %H:%M:%S')): #OR IDMB, member: only works with movies
-        try:
-            con = httplib.HTTPSConnection("api.simkl.com")
-            mediadict = {"movie": "movies", "episode":"episodes", "unknown":"episodes"}
-            media = mediadict[mediatype]
-            tosend = {}
-            if filename[:2] == "tt":
-                imdb = filename
-                toappend = {"ids":{"imdb":filename}, "watched_at":date}
-            else:
-                xbmc.log("Simkl: Filename - {}".format(filename))
-                values = {"file":filename}
-                values = json.dumps(values)
-                con.request("GET", "/search/file/", body=values, headers=headers)
-                r1 = con.getresponse().read().decode("utf-8")
-                r = json.loads(r1)
-                xbmc.log("Simkl: {}".format(r))
-                toappend = {"ids": r[mediatype]["ids"], "watched_at":date}
+        if self.is_user_logged():
+            try:
+                con = httplib.HTTPSConnection("api.simkl.com")
+                mediadict = {"movie": "movies", "episode":"episodes", "unknown":"episodes"}
+                media = mediadict[mediatype]
+                tosend = {}
+                if filename[:2] == "tt":
+                    imdb = filename
+                    toappend = {"ids":{"imdb":filename}, "watched_at":date}
+                else:
+                    xbmc.log("Simkl: Filename - {}".format(filename))
+                    values = {"file":filename}
+                    values = json.dumps(values)
+                    con.request("GET", "/search/file/", body=values, headers=headers)
+                    r1 = con.getresponse().read().decode("utf-8")
+                    r = json.loads(r1)
+                    xbmc.log("Simkl: {}".format(r))
+                    toappend = {"ids": r[mediatype]["ids"], "watched_at":date}
 
-            tosend[media] = []
-            tosend[media].append(toappend)
-            tosend = json.dumps(tosend)
+                tosend[media] = []
+                tosend[media].append(toappend)
+                tosend = json.dumps(tosend)
 
-            xbmc.log("Simkl: values {}".format(tosend))
-            con.request("GET", "/sync/history/", body=tosend, headers=headers)
-            xbmc.log("Simkl: {}".format(con.getresponse().read().decode("utf-8")))
-        except httplib.BadStatusLine:
-            xbmc.log("Simkl: {}".format("ERROR: httplib.BadStatusLine"))
+                xbmc.log("Simkl: values {}".format(tosend))
+                con.request("GET", "/sync/history/", body=tosend, headers=headers)
+                xbmc.log("Simkl: {}".format(con.getresponse().read().decode("utf-8")))
+            except httplib.BadStatusLine:
+                xbmc.log("Simkl: {}".format("ERROR: httplib.BadStatusLine"))
+        else:
+            xbmc.log("Simkl: Can't scrobble. User not logged in")
 
 api = API()
 if __name__ == "__main__":

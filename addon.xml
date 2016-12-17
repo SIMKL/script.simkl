@@ -12,7 +12,7 @@
   <extension point="xbmc.addon.metadata">
     <summary lang="en_gb">This is an add-on to use simkl together with kodi</summary>
     <disclaimer lang="en_gb">Currently under development</disclaimer>
-    <description lang="en_gb">Enter here a description</description>
+    <description lang="en_gb">Description</description>
     <platform>all</platform>
     <license>Not Licensed yet</license>
     <email>david@ddavo.me</email>
@@ -21,6 +21,6 @@
       <icon>resources/icon.png</icon>
       <fanart>resources/fanart.png</fanart>
     </assets>
-    <language>en es</language>
+    <language>en</language>
   </extension>
 </addon>

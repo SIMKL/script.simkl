@@ -43,6 +43,7 @@ class Engine:
         kodilibrary = json.loads(kodilibrary)
         if kodilibrary["result"]["limits"]["total"] > 0:
             for movie in kodilibrary["result"]["movies"]:
+                #Dont do that, upload all at once
 
                 if movie["playcount"] > 0:
                     imdb = movie["imdbnumber"]
