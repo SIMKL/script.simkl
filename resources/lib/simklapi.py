@@ -13,6 +13,8 @@ import xbmc
 import interface
 import httplib
 
+def getstr(id): return interface.getstr(id)
+
 REDIRECT_URI = "http://simkl.com"
 USERFILE     = xbmc.translatePath("special://profile/simkl_key")
 if not os.path.exists(USERFILE):
@@ -46,7 +48,7 @@ class API:
                 api.login()
         except Exception:
             xbmc.log("Simkl: {}".format("No INTERNET"))
-            interface.notify("You don't have internet")
+            interface.notify(getstr(32027))
             self.internet = False
 
     def login(self):

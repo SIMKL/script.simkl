@@ -12,7 +12,9 @@ from resources.lib import interface, engine
 from resources.lib import simklapi as API
 
 simkl_addon = xbmcaddon.Addon()
+interface.__addon__ = simkl_addon
 autoscrobble = simkl_addon.getSetting("autoscrobble")
+def getstr(id): return simkl_addon.getLocalizedString(id)
 
 if __name__ == "__main__":
     xbmc.log("Simkl dir: " + str(xbmc.translatePath("special://home")))
@@ -26,9 +28,9 @@ if __name__ == "__main__":
     #Remember: if getTime() is more than x% scrobble file
 
     if not API.api.is_user_logged():
-        interface.notify("Please Log In in addon settings")
+        interface.notify(getstr(32026))
     else:
-        interface.notify("Hello again {}".format(API.api.USERSETTINGS["user"]["name"]))
+        interface.notify(getstr(32025).format(API.api.USERSETTINGS["user"]["name"]))
 
     while not monitor.abortRequested():
         if monitor.waitForAbort(60):

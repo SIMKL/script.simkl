@@ -6,6 +6,8 @@ tmp = time.time()
 
 __addon__ = xbmcaddon.Addon("script.service.simkl")
 __icon__ = __addon__.getAddonInfo("icon")
+def getstr(id): return __addon__.getLocalizedString(id)
+
 xbmc.log("Simkl: Icon: "+str(__icon__))
 
 not_dialog = xbmcgui.Dialog()
@@ -19,13 +21,13 @@ class loginDialog:
         #TODO: If user is loged in, show a confirmation dialog
         API = api
         self.dialog = xbmcgui.DialogProgress()
-        self.dialog.create("Simkl login", 
-            "Enter to the following URL: {}".format(url), "PIN: {}".format(pin))
+        self.dialog.create(getstr(32021), 
+            getstr(32022).format(url), "PIN: {}".format(pin))
         waiting = True
         cnt = 0
         while waiting:
             pct = min(max(1, int( round( cnt*100 / exp, 0))), 99)
-            self.dialog.update(pct, line3="Remaining time: {}/{}".format(
+            self.dialog.update(pct, line3=getstr(32023).format(
                 str(cnt).zfill(3), exp))
 
             if cnt % (inter+1) == 0 and cnt>1:
