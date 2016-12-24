@@ -4,6 +4,8 @@
 import xbmc, xbmcaddon
 import interface
 import json
+__addon__ = interface.__addon__
+def getstr(id): return interface.getstr(id)
 
 class Engine:
     def __init__(self, api, player):
@@ -15,7 +17,9 @@ class Engine:
 
     def synclibrary(self):
         ### UPLOAD ###
-
+        #DISABLED UNTIL WORKING FINE
+        pass
+        '''
         kodilibrary = xbmc.executeJSONRPC(json.dumps({
           "jsonrpc": "2.0",
           "method": "VideoLibrary.GetMovies",
@@ -41,6 +45,7 @@ class Engine:
         }))
         xbmc.log("Simkl: Ret: {}".format(kodilibrary))
         kodilibrary = json.loads(kodilibrary)
+        
         if kodilibrary["result"]["limits"]["total"] > 0:
             for movie in kodilibrary["result"]["movies"]:
                 #Dont do that, upload all at once
@@ -49,6 +54,7 @@ class Engine:
                     imdb = movie["imdbnumber"]
                     date = movie["lastplayed"]
                     self.api.watched(imdb, "movie", date)
+        '''
 
 class Player(xbmc.Player):
     def __init__(self):
@@ -82,10 +88,10 @@ class Player(xbmc.Player):
             movie = self.getVideoInfoTag()
             imdb  = movie.getIMDBNumber().strip(" ")
             fname = self.getPlayingFile()
-            media = xbmc.executeJSONRPC(json.dumps({"jsonrpc": "2.0", "method": "Player.GetItem", 
+            thing = xbmc.executeJSONRPC(json.dumps({"jsonrpc": "2.0", "method": "Player.GetItem", 
                 "params": { "properties": [ "showtitle", "streamdetails","title"]
                 , "playerid": 1 }, "id": "VideoGetItem"}))
-            media = json.loads(media)["result"]["item"]["type"]
+            media = json.loads(thing)["result"]["item"]["type"]
             xbmc.log("Simkl: IMDb: {}".format(imdb))
             xbmc.log("Simkl: Genre: " + movie.getGenre())
             xbmc.log("Simkl: MediaType: " + str(media))
@@ -95,13 +101,20 @@ class Player(xbmc.Player):
             pctconfig  = int(self.addon.getSetting("scr-pct"))
             
             if percentage > pctconfig:
+                bubble = __addon__.getSetting("bubble")
+
                 xbmc.log("Simkl: Ready to scrobble {}".format(movie.getTitle()))
                 if imdb == "":
                     xbmc.log("Simkl: No imdb - Fname: {}".format(fname))
-                    self.api.watched(fname, media)
+                    r = self.api.watched(fname, media) #r from response
                 else:
                     xbmc.log("Simkl: IMDB: " + str(imdb))
-                    self.api.watched(imdb, media)
+                    r = self.api.watched(imdb, media)
+
+                if bubble and r:
+                    xbmc.log("Simkl: Full: {}".format(thing))
+                    interface.notify(getstr(32028).format(
+                        json.loads(thing)["result"]["item"]["label"]))
 
         except RuntimeError:
             pass

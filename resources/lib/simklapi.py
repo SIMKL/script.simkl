@@ -13,6 +13,7 @@ import xbmc
 import interface
 import httplib
 
+__addon__ = interface.__addon__
 def getstr(id): return interface.getstr(id)
 
 REDIRECT_URI = "http://simkl.com"
@@ -123,11 +124,16 @@ class API:
 
                 xbmc.log("Simkl: values {}".format(tosend))
                 con.request("GET", "/sync/history/", body=tosend, headers=headers)
-                xbmc.log("Simkl: {}".format(con.getresponse().read().decode("utf-8")))
+                r = con.getresponse().read().decode("utf-8")
+                xbmc.log("Simkl: {}".format(r))
+
+                return max(json.loads(r)["added"].values())
+
             except httplib.BadStatusLine:
                 xbmc.log("Simkl: {}".format("ERROR: httplib.BadStatusLine"))
         else:
             xbmc.log("Simkl: Can't scrobble. User not logged in")
+            return 0
 
 api = API()
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ import xbmc, xbmcgui, xbmcaddon
 import time
 tmp = time.time()
 
-__addon__ = xbmcaddon.Addon("script.service.simkl")
+__addon__ = xbmcaddon.Addon("script.simkl")
 __icon__ = __addon__.getAddonInfo("icon")
 def getstr(id): return __addon__.getLocalizedString(id)
 
