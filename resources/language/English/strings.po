@@ -53,7 +53,7 @@ msgid "Enter to the following URL: {}"
 msgstr ""
 
 msgctxt "#32023"
-msgcid "Remaining time: {}/{}"
+msgid "Remaining time: {}/{}"
 msgstr ""
 
 # Blahblahblah
@@ -68,6 +68,10 @@ msgstr ""
 
 msgctxt "#32027"
 msgid "You don't have internet"
+msgstr ""
+
+msgctxt "#32028"
+msgid "Scrobbling {}"
 msgstr ""
 
 #msgctxt "#"

@@ -53,7 +53,7 @@ msgid "Enter to the following URL: {}"
 msgstr "Entra a la siguiente URL: {}"
 
 msgctxt "#32023"
-msgcid "Remaining time: {}/{}"
+msgid "Remaining time: {}/{}"
 msgstr "Tiempo restante: {}/{}"
 
 # Blahblahblah
@@ -69,6 +69,10 @@ msgstr "Por favor inicia sesión en la configuración del addon"
 msgctxt "#32027"
 msgid "You don't have internet"
 msgstr "No tienes conexión a internet"
+
+msgctxt "#32028" 
+msgid "Scrobbling {}" 
+msgstr "Scrobbling {}"
 
 #msgctxt "#"
 #msgid ""
