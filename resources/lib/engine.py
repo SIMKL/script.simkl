@@ -115,6 +115,7 @@ class Player(xbmc.Player):
                     xbmc.log("Simkl: Full: {}".format(thing))
                     interface.notify(getstr(32028).format(
                         json.loads(thing)["result"]["item"]["label"]))
+                    r = 0
 
         except RuntimeError:
             pass

@@ -39,7 +39,7 @@ class API:
     def __init__(self):
         with open(USERFILE, "r") as f:
             self.token = f.readline().strip("\n")
-            headers["authorization"] = self.token
+            headers["authorization"] = "Bearer " + self.token
         try:
             self.con = httplib.HTTPSConnection("api.simkl.com")
             self.con.request("GET", "/users/settings", headers=headers)
@@ -101,10 +101,12 @@ class API:
     def watched(self, filename, mediatype, date=time.strftime('%Y-%m-%d %H:%M:%S')): #OR IDMB, member: only works with movies
         if self.is_user_logged():
             try:
+                if mediatype == "unknown": mediatype = "episode"
                 con = httplib.HTTPSConnection("api.simkl.com")
-                mediadict = {"movie": "movies", "episode":"episodes", "unknown":"episodes"}
+                mediadict = {"movie": "movies", "episode":"episodes"}
                 media = mediadict[mediatype]
                 tosend = {}
+                
                 if filename[:2] == "tt":
                     imdb = filename
                     toappend = {"ids":{"imdb":filename}, "watched_at":date}
