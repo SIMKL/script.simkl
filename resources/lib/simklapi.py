@@ -39,7 +39,7 @@ class API:
     def __init__(self):
         with open(USERFILE, "r") as f:
             self.token = f.readline().strip("\n")
-            headers["authorization"] = self.token
+            headers["authorization"] = "Bearer "+self.token
         try:
             self.con = httplib.HTTPSConnection("api.simkl.com")
             self.con.request("GET", "/users/settings", headers=headers)
@@ -70,7 +70,7 @@ class API:
         with open(USERFILE, "w") as f:
             f.write(token)
         ATOKEN = token
-        headers["authorization"] = token
+        headers["authorization"] = "Barear "+token
         self.token = token
 
     def check_login(self, ucode, log): #Log is the connection
