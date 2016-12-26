@@ -70,7 +70,7 @@ class API:
         with open(USERFILE, "w") as f:
             f.write(token)
         ATOKEN = token
-        headers["authorization"] = token
+        headers["authorization"] = "Barear "+token
         self.token = token
 
     def check_login(self, ucode, log): #Log is the connection
