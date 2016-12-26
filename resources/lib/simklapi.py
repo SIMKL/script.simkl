@@ -70,7 +70,7 @@ class API:
         with open(USERFILE, "w") as f:
             f.write(token)
         ATOKEN = token
-        headers["authorization"] = "Barear "+token
+        headers["authorization"] = "Bearer "+token
         self.token = token
 
     def check_login(self, ucode, log): #Log is the connection
@@ -101,15 +101,13 @@ class API:
     def watched(self, filename, mediatype, date=time.strftime('%Y-%m-%d %H:%M:%S')): #OR IDMB, member: only works with movies
         if self.is_user_logged():
             try:
-                if mediatype == "unknown": mediatype = "episode"
                 con = httplib.HTTPSConnection("api.simkl.com")
                 mediadict = {"movie": "movies", "episode":"episodes"}
-                media = mediadict[mediatype]
-                tosend = {}
                 
                 if filename[:2] == "tt":
                     imdb = filename
                     toappend = {"ids":{"imdb":filename}, "watched_at":date}
+                    media = mediadict[mediatype]
                 else:
                     xbmc.log("Simkl: Filename - {}".format(filename))
                     values = {"file":filename}
@@ -118,8 +116,10 @@ class API:
                     r1 = con.getresponse().read().decode("utf-8")
                     r = json.loads(r1)
                     xbmc.log("Simkl: {}".format(r))
-                    toappend = {"ids": r[mediatype]["ids"], "watched_at":date}
+                    media = mediadict[r["type"]]
+                    toappend = {"ids": r[r["type"]]["ids"], "watched_at":date}
 
+                tosend = {}
                 tosend[media] = []
                 tosend[media].append(toappend)
                 tosend = json.dumps(tosend)
