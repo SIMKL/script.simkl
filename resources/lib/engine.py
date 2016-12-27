@@ -89,8 +89,9 @@ class Player(xbmc.Player):
             imdb  = movie.getIMDBNumber().strip(" ")
             fname = self.getPlayingFile()
             thing = xbmc.executeJSONRPC(json.dumps({"jsonrpc": "2.0", "method": "Player.GetItem", 
-                "params": { "properties": [ "showtitle", "streamdetails","title"]
+                "params": { "properties": [ "showtitle", "title" ]
                 , "playerid": 1 }, "id": "VideoGetItem"}))
+            xbmc.log("Simkl: Full: {}".format(thing))
             media = json.loads(thing)["result"]["item"]["type"]
             xbmc.log("Simkl: IMDb: {}".format(imdb))
             xbmc.log("Simkl: Genre: " + movie.getGenre())
@@ -106,13 +107,12 @@ class Player(xbmc.Player):
                 xbmc.log("Simkl: Ready to scrobble {}".format(movie.getTitle()))
                 if imdb == "":
                     xbmc.log("Simkl: No imdb - Fname: {}".format(fname))
-                    r = self.api.watched(fname, media) #r from response
+                    r = self.api.watched(fname, media, self.getTotalTime())
                 else:
                     xbmc.log("Simkl: IMDB: " + str(imdb))
-                    r = self.api.watched(imdb, media)
+                    r = self.api.watched(imdb, media, self.getTotalTime())
 
                 if bubble and r:
-                    xbmc.log("Simkl: Full: {}".format(thing))
                     interface.notify(getstr(32028).format(
                         json.loads(thing)["result"]["item"]["label"]))
                     r = 0

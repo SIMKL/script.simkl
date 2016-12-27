@@ -40,6 +40,8 @@ class API:
         with open(USERFILE, "r") as f:
             self.token = f.readline().strip("\n")
             headers["authorization"] = "Bearer " + self.token
+            self.scrobbled_dict = {} #So it doesn't scrobble 5 times the same chapter
+            #{"Label":expiration_time}
         try:
             self.con = httplib.HTTPSConnection("api.simkl.com")
             self.con.request("GET", "/users/settings", headers=headers)
@@ -97,9 +99,24 @@ class API:
             return True
 
     ### SCROBBLING OR CHECKIN
+    def lock(self, fname, duration):
+        d = self.scrobbled_dict
+        d[fname] = time.time() + (100 - int(__addon__.getSetting("scr-pct"))) / 100 * duration
+        xbmc.log("Simkl: Locking {}".format(d))
 
-    def watched(self, filename, mediatype, date=time.strftime('%Y-%m-%d %H:%M:%S')): #OR IDMB, member: only works with movies
-        if self.is_user_logged():
+    def is_locked(self, fname):
+        d = self.scrobbled_dict
+        if not (fname in d.keys()): return 0
+        if d[fname] < time.time(): 
+            xbmc.log("Simkl: Can't scrobble, file locked")
+            xbmc.log(str(d))
+            return 1
+        else:
+            del d[fname]
+            return 0
+
+    def watched(self, filename, mediatype, duration, date=time.strftime('%Y-%m-%d %H:%M:%S')): #OR IDMB, member: only works with movies
+        if self.is_user_logged() and not self.is_locked(filename):
             try:
                 con = httplib.HTTPSConnection("api.simkl.com")
                 mediadict = {"movie": "movies", "episode":"episodes"}
@@ -129,12 +146,14 @@ class API:
                 r = con.getresponse().read().decode("utf-8")
                 xbmc.log("Simkl: {}".format(r))
 
-                return max(json.loads(r)["added"].values())
+                success = max(json.loads(r)["added"].values())
+                if success: self.lock(filename, duration)
+                return success
 
             except httplib.BadStatusLine:
                 xbmc.log("Simkl: {}".format("ERROR: httplib.BadStatusLine"))
         else:
-            xbmc.log("Simkl: Can't scrobble. User not logged in")
+            xbmc.log("Simkl: Can't scrobble. User not logged in or file locked")
             return 0
 
 api = API()
