@@ -44,7 +44,7 @@ class Engine:
     }))
     xbmc.log("Simkl: Ret: {}".format(kodilibrary))
     kodilibrary = json.loads(kodilibrary)
-    
+
     if kodilibrary["result"]["limits"]["total"] > 0:
       for movie in kodilibrary["result"]["movies"]:
         #Dont do that, upload all at once
@@ -84,6 +84,7 @@ class Player(xbmc.Player):
     xbmc.log("Simkl: ONPLAYBACKENDED")
     self.onPlayBackStopped()
   def onPlayBackStopped(self):
+    '''Gets the info needed to pass to the api'''
     try:
       movie = self.getVideoInfoTag()
       imdb  = movie.getIMDBNumber().strip(" ")

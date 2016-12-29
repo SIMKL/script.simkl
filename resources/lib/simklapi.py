@@ -12,6 +12,7 @@ except ImportError:
 import xbmc
 import interface
 import httplib
+import xbmcgui
 
 __addon__ = interface.__addon__
 def getstr(strid): return interface.getstr(strid)
@@ -32,20 +33,20 @@ with open(os.path.dirname(os.path.realpath(__file__)).strip("lib") + "data/apike
   xbmc.log("APIKEY: {}".format(APIKEY))
 ATOKEN = 0 #Get atoken from file
 headers = {"Content-Type": "application-json",
-  "simkl-api-key": APIKEY
-}
+  "simkl-api-key": APIKEY}
 
 class API:
   def __init__(self):
+    self.scrobbled_dict = {} #So it doesn't scrobble 5 times the same chapter
+    #{"Label":expiration_time}
     with open(USERFILE, "r") as f:
       self.token = f.readline().strip("\n")
       headers["authorization"] = "Bearer " + self.token
-      self.scrobbled_dict = {} #So it doesn't scrobble 5 times the same chapter
-      #{"Label":expiration_time}
     try:
       self.con = httplib.HTTPSConnection("api.simkl.com")
       self.con.request("GET", "/users/settings", headers=headers)
       self.USERSETTINGS = json.loads(self.con.getresponse().read().decode("utf-8"))
+      xbmc.log("Simkl: " + str(self.USERSETTINGS))
       self.internet = True
       if not os.path.exists(USERFILE):
         api.login()
@@ -63,9 +64,20 @@ class API:
     r = log.getresponse().read().decode("utf-8")
     xbmc.log(r)
     rdic = json.loads(r)
-    dialog = interface.loginDialog(rdic["verification_url"],
-      rdic["user_code"], self.check_login, log, rdic["expires_in"],
-      rdic["interval"], self)
+    #interface.loginDialog(rdic["verification_url"],
+    #  rdic["user_code"], self.check_login, log, rdic["expires_in"],
+    #  rdic["interval"], self)
+
+    pin = rdic["user_code"]
+    url = rdic["verification_url"]
+    exp = int(rdic["expires_in"])
+    ntv = int(rdic["interval"])
+
+    self.logindialog = interface.loginDialog("simkl-LoginDialog.xml",
+      __addon__.getAddonInfo("path"), pin=pin, url=url,
+      check_login=self.check_login, log=log, exp=exp, inter=ntv, api=self)
+    self.logindialog.doModal()
+    del self.logindialog
 
   def set_atoken(self, token):
     global ATOKEN
@@ -85,13 +97,15 @@ class API:
       log.request("GET", "/users/settings", headers=headers)
       r = json.loads(log.getresponse().read().decode("utf-8"))
       self.USERSETTINGS = r
-      xbmc.log(str(self.USERSETTINGS))
       return True
     elif r["result"] == "KO":
       return False
 
   def is_user_logged(self):
-    if self.token == "":
+    """ Checks if user is logged in """
+    failed = False
+    if "error" in self.USERSETTINGS.keys(): failed = self.USERSETTINGS["error"]
+    if self.token == "" or failed == "user_token_failed":
       xbmc.log("Simkl: User not logged in")
       return False
     else:
@@ -121,17 +135,20 @@ class API:
         mediadict = {"movie": "movies", "episode":"episodes"}
 
         if filename[:2] == "tt":
-          imdb = filename
           toappend = {"ids":{"imdb":filename}, "watched_at":date}
           media = mediadict[mediatype]
         else:
           xbmc.log("Simkl: Filename - {}".format(filename))
           values = {"file":filename}
           values = json.dumps(values)
+          xbmc.log("Simkl: Getting info about: ".format(values))
           con.request("GET", "/search/file/", body=values, headers=headers)
           r1 = con.getresponse().read().decode("utf-8")
           r = json.loads(r1)
-          xbmc.log("Simkl: {}".format(r))
+          if r == []:
+            xbmc.log("Simkl: Couldn't scrobble: Null Response")
+            return 0
+          xbmc.log("Simkl: Response: {}".format(r))
           media = mediadict[r["type"]]
           toappend = {"ids": r[r["type"]]["ids"], "watched_at":date}
 

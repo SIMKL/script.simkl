@@ -14,14 +14,73 @@ not_dialog = xbmcgui.Dialog()
 def notify(txt="Test"):
   not_dialog.notification("Simkl", txt, __icon__) #Put an icon
 
-#import simklapi
+PIN_LABEL      = 201
+INSTRUCTION_ID = 202
+CANCEL_BUTTON  = 203
 
+#xmlfile = ""
+#script  = __addon__.getAddonInfo("path").decode("utf-8")
+class loginDialog(xbmcgui.WindowXMLDialog):
+  def __init__(self, xmlFilename, scriptPath, pin, url, check_login, log, 
+    exp=900, inter=5, api=None):
+    self.pin = pin
+    self.url = url
+    self.check_login = check_login
+    self.log = log
+    self.exp = exp
+    self.inter = inter
+    self.api = api
+    self.waiting = True
+    self.canceled = False
+
+  def onInit(self):
+    instruction = self.getControl(INSTRUCTION_ID)
+    instruction.setLabel(
+      getstr(32022).format("[COLOR yellow]" + self.url + "[/COLOR]"))
+    self.getControl(PIN_LABEL).setLabel(self.pin)
+    
+    cnt = 0
+    while self.waiting:
+      if cnt % (self.inter+1) == 0 and cnt>1:
+        xbmc.log("Simkl: Still waiting... {}".format(cnt))
+        if self.check_login(self.pin, self.log):
+
+          xbmc.log(str(self.api.USERSETTINGS))
+          notify("Hello {}".format(self.api.USERSETTINGS["user"]["name"]))
+          self.waiting = False
+        #Now check the user has done what it has to be done
+      cnt += 1
+      time.sleep(1)
+      if self.canceled or cnt >= self.exp:
+        self.waiting = False
+        notify("Couldn't log in")
+
+    xbmc.log("Simkl: Stop waiting")
+    self.close()
+
+  def onAction(self, action):
+    #xbmc.log("Simkl: onaction {}".format(action))
+    if action == True: #TODO
+      self.close()
+
+  def onControl(self, controlID):
+    pass
+  def onFocus(self, controlID):
+    pass 
+
+  def onClick(self, controlID):
+    xbmc.log("Simkl: onclick {}".format(controlID))
+    if controlID == CANCEL_BUTTON:
+      self.canceled = True
+      self.close()
+
+'''
 class loginDialog:
   def __init__(self, url, pin, check_login, log, exp=900, inter=5, api=None):
     #TODO: If user is loged in, show a confirmation dialog
     API = api
     self.dialog = xbmcgui.DialogProgress()
-    self.dialog.create(getstr(32021), 
+    self.dialog.create(getstr(32021),
       getstr(32022).format(url), "PIN: {}".format(pin))
     waiting = True
     cnt = 0
@@ -43,3 +102,4 @@ class loginDialog:
       if self.dialog.iscanceled() or cnt >= exp:
         waiting = False
         #raise Not logged in
+'''

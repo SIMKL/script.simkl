@@ -49,7 +49,7 @@ msgid "Simkl login"
 msgstr ""
 
 msgctxt "#32022"
-msgid "Enter to the following URL: {}"
+msgid "Visit {} on your device and enter this code"
 msgstr ""
 
 msgctxt "#32023"
