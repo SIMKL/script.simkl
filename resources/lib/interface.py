@@ -38,7 +38,7 @@ class loginDialog(xbmcgui.WindowXMLDialog):
     instruction.setLabel(
       getstr(32022).format("[COLOR yellow]" + self.url + "[/COLOR]"))
     self.getControl(PIN_LABEL).setLabel(self.pin)
-    
+
     cnt = 0
     while self.waiting:
       if cnt % (self.inter+1) == 0 and cnt>1:
@@ -66,7 +66,7 @@ class loginDialog(xbmcgui.WindowXMLDialog):
   def onControl(self, controlID):
     pass
   def onFocus(self, controlID):
-    pass 
+    pass
 
   def onClick(self, controlID):
     xbmc.log("Simkl: onclick {}".format(controlID))

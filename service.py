@@ -25,8 +25,7 @@ if __name__ == "__main__":
   player  = engine.Player()
   player.addon = simkl_addon
   eng     = engine.Engine(API.api, player)
-  #Remember: if getTime() is more than x% scrobble file
-  
+  #Remember: if getTime() is more than x% scrobble file  
 
   if not API.api.is_user_logged():
     API.api.login() #Add "remind me tomorrow button"

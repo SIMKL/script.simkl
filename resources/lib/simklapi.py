@@ -140,15 +140,16 @@ class API:
         else:
           xbmc.log("Simkl: Filename - {}".format(filename))
           values = {"file":filename}
+          xbmc.log(values)
           values = json.dumps(values)
-          xbmc.log("Simkl: Getting info about: ".format(values))
+          xbmc.log("Simkl: Query: {}".format(values))
           con.request("GET", "/search/file/", body=values, headers=headers)
           r1 = con.getresponse().read().decode("utf-8")
           r = json.loads(r1)
+          xbmc.log("Simkl: Response: {}".format(r))
           if r == []:
             xbmc.log("Simkl: Couldn't scrobble: Null Response")
             return 0
-          xbmc.log("Simkl: Response: {}".format(r))
           media = mediadict[r["type"]]
           toappend = {"ids": r[r["type"]]["ids"], "watched_at":date}
 
