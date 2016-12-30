@@ -59,8 +59,8 @@ class Player(xbmc.Player):
   def __init__(self):
     xbmc.Player.__init__(self)
 
-  @classmethod
-  def getMediaType(self):
+  @staticmethod
+  def getMediaType():
     if xbmc.getCondVisibility('Container.Content(tvshows)'):
       return "show"
     elif xbmc.getCondVisibility('Container.Content(seasons)'):
@@ -101,7 +101,7 @@ class Player(xbmc.Player):
 
       percentage = 100 * self.getTime() / self.getTotalTime()
       pctconfig  = int(self.addon.getSetting("scr-pct"))
-      
+
       if percentage > pctconfig:
         bubble = __addon__.getSetting("bubble")
 

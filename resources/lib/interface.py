@@ -1,7 +1,8 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-import xbmc, xbmcgui, xbmcaddon
 import time
+import threading
+import xbmc, xbmcgui, xbmcaddon
 tmp = time.time()
 
 __addon__ = xbmcaddon.Addon("script.simkl")
@@ -33,12 +34,7 @@ class loginDialog(xbmcgui.WindowXMLDialog):
     self.waiting = True
     self.canceled = False
 
-  def onInit(self):
-    instruction = self.getControl(INSTRUCTION_ID)
-    instruction.setLabel(
-      getstr(32022).format("[COLOR yellow]" + self.url + "[/COLOR]"))
-    self.getControl(PIN_LABEL).setLabel(self.pin)
-
+  def threaded(self):
     cnt = 0
     while self.waiting:
       if cnt % (self.inter+1) == 0 and cnt>1:
@@ -58,13 +54,17 @@ class loginDialog(xbmcgui.WindowXMLDialog):
     xbmc.log("Simkl: Stop waiting")
     self.close()
 
-  def onAction(self, action):
-    #xbmc.log("Simkl: onaction {}".format(action))
-    if action == True: #TODO
-      self.close()
+  def onInit(self):
+    instruction = self.getControl(INSTRUCTION_ID)
+    instruction.setLabel(
+      getstr(32022).format("[COLOR ffffbf00]" + self.url + "[/COLOR]"))
+    self.getControl(PIN_LABEL).setLabel(self.pin)
+
+    t = threading.Thread(target=self.threaded)
+    t.start()
 
   def onControl(self, controlID):
-    pass
+    xbmc.log("Simkl: oncontrol {}".format(controlID))
   def onFocus(self, controlID):
     pass
 
@@ -72,7 +72,6 @@ class loginDialog(xbmcgui.WindowXMLDialog):
     xbmc.log("Simkl: onclick {}".format(controlID))
     if controlID == CANCEL_BUTTON:
       self.canceled = True
-      self.close()
 
 '''
 class loginDialog:

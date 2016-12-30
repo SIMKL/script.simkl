@@ -12,7 +12,6 @@ except ImportError:
 import xbmc
 import interface
 import httplib
-import xbmcgui
 
 __addon__ = interface.__addon__
 def getstr(strid): return interface.getstr(strid)
@@ -140,7 +139,6 @@ class API:
         else:
           xbmc.log("Simkl: Filename - {}".format(filename))
           values = {"file":filename}
-          xbmc.log(values)
           values = json.dumps(values)
           xbmc.log("Simkl: Query: {}".format(values))
           con.request("GET", "/search/file/", body=values, headers=headers)

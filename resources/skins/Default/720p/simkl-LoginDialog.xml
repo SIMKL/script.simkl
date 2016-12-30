@@ -22,14 +22,14 @@
       <control type="label">
         <description>Header</description>
         <posx>0</posx>
-        <posy>30</posy>
+        <posy>20</posy>
         <width>800</width>
         <height>25</height>
         <!-- Structure: $ADDON[script.simkl <STRID>] -->
         <label>SIMKL account authorization</label>
         <align>center</align>
         <aligny>center</aligny>
-        <textcolor>FFAAAAAA</textcolor>
+        <textcolor>FFa7a7a7</textcolor>
       </control>
       <control type="label" id="201">
         <description>PIN</description>
@@ -49,22 +49,27 @@
       <control type="label" id="202">
         <description>Instructions</description>
         <posx>0</posx>
-        <posy>170</posy>
+        <posy>210</posy>
         <width>800</width>
         <height>50</height>
         <label> Instructions </label>
+        <font>font16</font>
         <align>center</align>
         <aligny>center</aligny>
-        <textcolor>FFFFFFFF</textcolor>
+        <textcolor>FFf0f0f0</textcolor>
       </control>
       <control type="button" id="203">
         <description>Cancel</description>
         <align>center</align>
         <posx>325</posx>
-        <posy>320</posy>
+        <posy>340</posy>
         <width>150</width>
         <height>30</height>
         <label>Cancel</label>
+        <textcolor>FFededed</textcolor>
+        <focusedcolor>FFededed</focusedcolor>
+        <texturenofocus>button_nofocus.png</texturenofocus>
+        <texturefocus>button_focus.png</texturefocus>
         <onclick>PreviousMenu</onclick>
         <!-- Not visible if using a remote (press back) -->
         <visible>system.getbool(input.enablemouse)</visible>
