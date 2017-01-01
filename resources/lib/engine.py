@@ -19,41 +19,39 @@ class Engine:
     ### UPLOAD ###
     #DISABLED UNTIL WORKING FINE
     pass
-    '''
-    kodilibrary = xbmc.executeJSONRPC(json.dumps({
-      "jsonrpc": "2.0",
-      "method": "VideoLibrary.GetMovies",
-      "params": {
-      "limits": {
-        "start": 0,
-        "end": 1000
-      },
-      "properties": [
-        "playcount",
-        "imdbnumber",
-        "file",
-        "lastplayed"
-      ],
-      "sort": {
-        "order": "ascending",
-        "method": "label",
-        "ignorearticle": True
-      }
-      },
-      "id": "libMovies"
-    }))
-    xbmc.log("Simkl: Ret: {}".format(kodilibrary))
-    kodilibrary = json.loads(kodilibrary)
+    # kodilibrary = xbmc.executeJSONRPC(json.dumps({
+    #   "jsonrpc": "2.0",
+    #   "method": "VideoLibrary.GetMovies",
+    #   "params": {
+    #   "limits": {
+    #     "start": 0,
+    #     "end": 1000
+    #   },
+    #   "properties": [
+    #     "playcount",
+    #     "imdbnumber",
+    #     "file",
+    #     "lastplayed"
+    #   ],
+    #   "sort": {
+    #     "order": "ascending",
+    #     "method": "label",
+    #     "ignorearticle": True
+    #   }
+    #   },
+    #   "id": "libMovies"
+    # }))
+    # xbmc.log("Simkl: Ret: {}".format(kodilibrary))
+    # kodilibrary = json.loads(kodilibrary)
 
-    if kodilibrary["result"]["limits"]["total"] > 0:
-      for movie in kodilibrary["result"]["movies"]:
-        #Dont do that, upload all at once
+    # if kodilibrary["result"]["limits"]["total"] > 0:
+    #   for movie in kodilibrary["result"]["movies"]:
+    #     #Dont do that, upload all at once
 
-        if movie["playcount"] > 0:
-          imdb = movie["imdbnumber"]
-          date = movie["lastplayed"]
-          self.api.watched(imdb, "movie", date)
-    '''
+    #     if movie["playcount"] > 0:
+    #       imdb = movie["imdbnumber"]
+    #       date = movie["lastplayed"]
+    #       self.api.watched(imdb, "movie", date)
 
 class Player(xbmc.Player):
   def __init__(self):
@@ -102,8 +100,9 @@ class Player(xbmc.Player):
       percentage = 100 * self.getTime() / self.getTotalTime()
       pctconfig  = int(self.addon.getSetting("scr-pct"))
 
-      if percentage > pctconfig:
+      if 99 > percentage > pctconfig:
         bubble = __addon__.getSetting("bubble")
+        xbmc.log("Percentage: {}, pctconfig {}".format(percentage, pctconfig))
 
         xbmc.log("Simkl: Ready to scrobble {}".format(movie.getTitle()))
         if imdb == "":

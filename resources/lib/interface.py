@@ -22,7 +22,7 @@ CANCEL_BUTTON  = 203
 #xmlfile = ""
 #script  = __addon__.getAddonInfo("path").decode("utf-8")
 class loginDialog(xbmcgui.WindowXMLDialog):
-  def __init__(self, xmlFilename, scriptPath, pin, url, check_login, log, 
+  def __init__(self, xmlFilename, scriptPath, pin, url, check_login, log,
     exp=900, inter=5, api=None):
     self.pin = pin
     self.url = url
@@ -64,7 +64,7 @@ class loginDialog(xbmcgui.WindowXMLDialog):
     t.start()
 
   def onControl(self, controlID):
-    xbmc.log("Simkl: oncontrol {}".format(controlID))
+    pass
   def onFocus(self, controlID):
     pass
 
@@ -72,33 +72,3 @@ class loginDialog(xbmcgui.WindowXMLDialog):
     xbmc.log("Simkl: onclick {}".format(controlID))
     if controlID == CANCEL_BUTTON:
       self.canceled = True
-
-'''
-class loginDialog:
-  def __init__(self, url, pin, check_login, log, exp=900, inter=5, api=None):
-    #TODO: If user is loged in, show a confirmation dialog
-    API = api
-    self.dialog = xbmcgui.DialogProgress()
-    self.dialog.create(getstr(32021),
-      getstr(32022).format(url), "PIN: {}".format(pin))
-    waiting = True
-    cnt = 0
-    while waiting:
-      pct = min(max(1, int( round( cnt*100 / exp, 0))), 99)
-      self.dialog.update(pct, line3=getstr(32023).format(
-        str(cnt).zfill(3), exp))
-
-      if cnt % (inter+1) == 0 and cnt>1:
-        if check_login(pin,log):
-          dialognot = xbmcgui.Dialog()
-          xbmc.log(str(API.USERSETTINGS))
-          dialognot.notification("Simkl", "Hello {}".format(
-            API.USERSETTINGS["user"]["name"]))
-          waiting = False
-        #Now check the user has done what it has to be done
-      time.sleep(1)
-      cnt += 1
-      if self.dialog.iscanceled() or cnt >= exp:
-        waiting = False
-        #raise Not logged in
-'''

@@ -130,8 +130,9 @@ class API:
   def watched(self, filename, mediatype, duration, date=time.strftime('%Y-%m-%d %H:%M:%S')): #OR IDMB, member: only works with movies
     if self.is_user_logged() and not self.is_locked(filename):
       try:
+        filename = filename.replace("\\", "/")
         con = httplib.HTTPSConnection("api.simkl.com")
-        mediadict = {"movie": "movies", "episode":"episodes"}
+        mediadict = {"movie": "movies", "episode":"episodes", "show":"show"}
 
         if filename[:2] == "tt":
           toappend = {"ids":{"imdb":filename}, "watched_at":date}
@@ -143,8 +144,8 @@ class API:
           xbmc.log("Simkl: Query: {}".format(values))
           con.request("GET", "/search/file/", body=values, headers=headers)
           r1 = con.getresponse().read().decode("utf-8")
+          xbmc.log("Simkl: Response: {}".format(r1))
           r = json.loads(r1)
-          xbmc.log("Simkl: Response: {}".format(r))
           if r == []:
             xbmc.log("Simkl: Couldn't scrobble: Null Response")
             return 0
