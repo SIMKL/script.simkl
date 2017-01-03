@@ -112,19 +112,22 @@ class API:
 
   ### SCROBBLING OR CHECKIN
   def lock(self, fname, duration):
-    d = self.scrobbled_dict
-    d[fname] = time.time() + (100 - int(__addon__.getSetting("scr-pct"))) / 100 * duration
-    xbmc.log("Simkl: Locking {}".format(d))
+    xbmc.log("Duration: %s" %duration)
+    exp = self.scrobbled_dict
+    exp[fname] = int(time.time() + (105 - float(__addon__.getSetting("scr-pct"))) / 100 * duration)
+    xbmc.log("Simkl: Locking {}".format(exp))
 
   def is_locked(self, fname):
-    d = self.scrobbled_dict
-    if not (fname in d.keys()): return 0
-    if d[fname] < time.time():
-      xbmc.log("Simkl: Can't scrobble, file locked")
-      xbmc.log(str(d))
+    exp = self.scrobbled_dict
+    if not (fname in exp.keys()): return 0
+    xbmc.log("Time: {}, exp: {}, Dif: {}".format(int(time.time()), exp[fname], int(exp[fname]-time.time())))
+    #When Dif reaches 0, scrobble.
+    if time.time() < exp[fname]:
+      xbmc.log("Simkl: Can't scrobble, file locked (alredy scrobbled)")
+      xbmc.log(str(exp))
       return 1
     else:
-      del d[fname]
+      del exp[fname]
       return 0
 
   def watched(self, filename, mediatype, duration, date=time.strftime('%Y-%m-%d %H:%M:%S')): #OR IDMB, member: only works with movies

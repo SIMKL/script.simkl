@@ -71,13 +71,12 @@ class Player(xbmc.Player):
       return None
 
   def onPlayBackStarted(self):
-    self.onPlayBackStopped()
+    #self.onPlayBackStopped()
+    pass
   def onPlayBackSeek(self, *args):
-    #self.onPlayBackStopped()
-    pass
+    self.onPlayBackStopped()
   def onPlayBackResumed(self):
-    #self.onPlayBackStopped()
-    pass
+    self.onPlayBackStopped()
   def onPlayBackEnded(self):
     xbmc.log("Simkl: ONPLAYBACKENDED")
     self.onPlayBackStopped()
@@ -119,3 +118,5 @@ class Player(xbmc.Player):
 
     except RuntimeError:
       pass
+    except ZeroDivisionError:
+      self.onPlayBackStopped()
