@@ -12,8 +12,8 @@ def getstr(strid): return __addon__.getLocalizedString(strid)
 xbmc.log("Simkl: Icon: "+str(__icon__))
 
 not_dialog = xbmcgui.Dialog()
-def notify(txt="Test"):
-  not_dialog.notification("Simkl", txt, __icon__) #Put an icon
+def notify(txt="Test", title="Simkl", icon=__icon__):
+  not_dialog.notification(title, txt, icon)
 
 PIN_LABEL      = 201
 INSTRUCTION_ID = 202

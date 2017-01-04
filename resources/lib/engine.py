@@ -87,10 +87,11 @@ class Player(xbmc.Player):
       imdb  = movie.getIMDBNumber().strip(" ")
       fname = self.getPlayingFile()
       thing = xbmc.executeJSONRPC(json.dumps({"jsonrpc": "2.0", "method": "Player.GetItem",
-        "params": { "properties": [ "showtitle", "title" ]
+        "params": { "properties": [ "showtitle", "title", "season", "episode" ]
         , "playerid": 1 }, "id": "VideoGetItem"}))
       xbmc.log("Simkl: Full: {}".format(thing))
-      media = json.loads(thing)["result"]["item"]["type"]
+      item = json.loads(thing)["result"]["item"]
+      media = item["type"]
       xbmc.log("Simkl: IMDb: {}".format(imdb))
       xbmc.log("Simkl: Genre: " + movie.getGenre())
       xbmc.log("Simkl: MediaType: " + str(media))
@@ -112,8 +113,13 @@ class Player(xbmc.Player):
           r = self.api.watched(imdb, media, self.getTotalTime())
 
         if bubble and r:
-          interface.notify(getstr(32028).format(
-            json.loads(thing)["result"]["item"]["label"]))
+          txt = item["label"]
+          title = ""
+          if media == "movie": txt = item["title"]
+          elif media == "episode":
+            txt = item["showtitle"]
+            title = "- S{:02}E{:02}".format(item["season"], item["episode"])
+          interface.notify(getstr(32028).format(title), title=txt)
           r = 0
 
     except RuntimeError:
