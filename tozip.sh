@@ -1,5 +1,6 @@
 #!/bin/bash
 #Creates a zip file compatible with Kodi
+date --rfc-3339=seconds > resources/data/compdate.txt
 
 mkdir script.simkl
 rm script.simkl.zip

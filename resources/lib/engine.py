@@ -102,6 +102,7 @@ class Player(xbmc.Player):
 
       if 99 > percentage > pctconfig:
         bubble = __addon__.getSetting("bubble")
+        xbmc.log("Simkl: Bubble == {}".format(bubble))
         xbmc.log("Percentage: {}, pctconfig {}".format(percentage, pctconfig))
 
         xbmc.log("Simkl: Ready to scrobble {}".format(movie.getTitle()))
@@ -112,7 +113,7 @@ class Player(xbmc.Player):
           xbmc.log("Simkl: IMDB: " + str(imdb))
           r = self.api.watched(imdb, media, self.getTotalTime())
 
-        if bubble and r:
+        if bubble=="true" and r:
           txt = item["label"]
           title = ""
           if media == "movie": txt = item["title"]

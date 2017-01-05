@@ -130,10 +130,10 @@ class API:
       del exp[fname]
       return 0
 
-  def watched(self, filename, mediatype, duration, date=time.strftime('%Y-%m-%d %H:%M:%S')): #OR IDMB, member: only works with movies
+  def watched(self, filename, mediatype, duration, date=time.strftime('%Y-%m-%d %H:%M:%S'), cnt=0): #OR IDMB, member: only works with movies
+    filename = filename.replace("\\", "/")
     if self.is_user_logged() and not self.is_locked(filename):
       try:
-        filename = filename.replace("\\", "/")
         con = httplib.HTTPSConnection("api.simkl.com")
         mediadict = {"movie": "movies", "episode":"episodes", "show":"show"}
 
@@ -171,6 +171,13 @@ class API:
 
       except httplib.BadStatusLine:
         xbmc.log("Simkl: {}".format("ERROR: httplib.BadStatusLine"))
+      except SSLError: #Fix #8
+        xbmc.log("Simkl: ERROR: SSLError, retrying?")
+        if cnt == 0: interface.notify("Error at scrobbling. Try number %s" % cnt+1)
+        if cnt <= 3:
+          self.watched(filename, mediatype, duration, date=date, cnt=cnt+1)
+        else: interface.notify("I give up :(")
+
     else:
       xbmc.log("Simkl: Can't scrobble. User not logged in or file locked")
       return 0

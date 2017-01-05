@@ -5,7 +5,7 @@ NOT LICENSED YET
 Creator: David Davó <david@ddavo.me>
 '''
 
-import sys
+import sys, os
 import xbmcaddon
 import xbmc
 from resources.lib import interface, engine
@@ -16,10 +16,14 @@ interface.__addon__ = __addon__
 autoscrobble = __addon__.getSetting("autoscrobble")
 def getstr(strid): return __addon__.getLocalizedString(strid)
 
+with open(os.path.dirname(os.path.realpath(__file__)) + "/resources/data/compdate.txt", "r") as f:
+    __compdate__ = f.read()
+
 if __name__ == "__main__":
     xbmc.log("Simkl dir: " + str(xbmc.translatePath("special://home")))
     xbmc.log("Simkl | Python Version: " + str(sys.version))
     xbmc.log("Simkl | "+ str(sys.argv), level=xbmc.LOGDEBUG)
+    xbmc.log("Simkl | compdate: {}".format(__compdate__))
     monitor = xbmc.Monitor()
 
     player  = engine.Player()
