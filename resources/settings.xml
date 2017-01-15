@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
   <category label="LogIn">
+    <setting label="You are not logged in" type="lsep" visible="eq(3,false)"/>
+    <setting label="You are logged in" type="lsep" visible="eq(2,true)"/>
     <setting label="32001" type="action" action="RunScript(special://home/addons/script.simkl/resources/lib/simklapi.py, login, special://xbmc/)"/>
+    <setting label="If you see this, report to github" type="bool" id="loginbool" default="true" enable="false" visible="false"/>
   </category>
   <setting type="sep"/>
   <category label="Options">

@@ -40,6 +40,7 @@ if __name__ == "__main__":
     else:
         interface.notify(getstr(32025).format(API.api.USERSETTINGS["user"]["name"]))
 
+    #__addon__.openSettings()
     while not monitor.abortRequested():
         if monitor.waitForAbort(90):
             break

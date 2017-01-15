@@ -5,9 +5,9 @@ import sys, os, time
 #import urllib
 #import request
 try:
-  import json
+    import json
 except ImportError:
-  import simplejson as json
+    import simplejson as json
 
 import xbmc
 import interface
@@ -19,173 +19,178 @@ def getstr(strid): return interface.getstr(strid)
 REDIRECT_URI = "http://simkl.com"
 USERFILE     = xbmc.translatePath("special://profile/simkl_key")
 if not os.path.exists(USERFILE):
-  with open(USERFILE, "w") as f:
-    f.write("")
+    with open(USERFILE, "w") as f:
+        f.write("")
 else:
-  with open(USERFILE, "r") as f:
-    print(xbmc.log("Simkl Userfile " + str(f.read())))
+    with open(USERFILE, "r") as f:
+        print(xbmc.log("Simkl Userfile " + str(f.read())))
 
 with open(os.path.dirname(os.path.realpath(__file__)).strip("lib") + "data/apikey") as f:
-  d = json.loads(f.read())
-  APIKEY = d["apikey"]
-  SECRET = d["secret"]
-  xbmc.log("APIKEY: {}".format(APIKEY))
+    d = json.loads(f.read())
+    APIKEY = d["apikey"]
+    SECRET = d["secret"]
+    xbmc.log("APIKEY: {}".format(APIKEY))
 ATOKEN = 0 #Get atoken from file
 headers = {"Content-Type": "application-json",
-  "simkl-api-key": APIKEY}
+    "simkl-api-key": APIKEY}
 
 class API:
-  def __init__(self):
-    self.scrobbled_dict = {} #So it doesn't scrobble 5 times the same chapter
-    #{"Label":expiration_time}
-    with open(USERFILE, "r") as f:
-      self.token = f.readline().strip("\n")
-      headers["authorization"] = "Bearer " + self.token
-    try:
-      self.con = httplib.HTTPSConnection("api.simkl.com")
-      self.con.request("GET", "/users/settings", headers=headers)
-      self.USERSETTINGS = json.loads(self.con.getresponse().read().decode("utf-8"))
-      xbmc.log("Simkl: " + str(self.USERSETTINGS))
-      self.internet = True
-      if not os.path.exists(USERFILE):
-        api.login()
-    except Exception:
-      xbmc.log("Simkl: {}".format("No INTERNET"))
-      interface.notify(getstr(32027))
-      self.internet = False
+    def __init__(self):
+        self.scrobbled_dict = {} #So it doesn't scrobble 5 times the same chapter
+        #{"Label":expiration_time}
+        with open(USERFILE, "r") as f:
+            self.token = f.readline().strip("\n")
+            headers["authorization"] = "Bearer " + self.token
+        try:
+            self.con = httplib.HTTPSConnection("api.simkl.com")
+            self.con.request("GET", "/users/settings", headers=headers)
+            self.USERSETTINGS = json.loads(self.con.getresponse().read().decode("utf-8"))
+            xbmc.log("Simkl: Usersettings: " + str(self.USERSETTINGS))
+            self.internet = True
+            if not os.path.exists(USERFILE):
+                api.login()
+        except Exception:
+            xbmc.log("Simkl: {}".format("No INTERNET"))
+            interface.notify(getstr(32027))
+            self.internet = False
 
-  def login(self):
-    url = "/oauth/pin?client_id="
-    url += APIKEY + "&redirect=" + REDIRECT_URI
+    def login(self):
+        url = "/oauth/pin?client_id="
+        url += APIKEY + "&redirect=" + REDIRECT_URI
 
-    log = httplib.HTTPSConnection("api.simkl.com")
-    log.request("GET", url, headers=headers)
-    r = log.getresponse().read().decode("utf-8")
-    xbmc.log(r)
-    rdic = json.loads(r)
-    #interface.loginDialog(rdic["verification_url"],
-    #  rdic["user_code"], self.check_login, log, rdic["expires_in"],
-    #  rdic["interval"], self)
+        log = httplib.HTTPSConnection("api.simkl.com")
+        log.request("GET", url, headers=headers)
+        r = log.getresponse().read().decode("utf-8")
+        xbmc.log(r)
+        rdic = json.loads(r)
+        #interface.loginDialog(rdic["verification_url"],
+        #  rdic["user_code"], self.check_login, log, rdic["expires_in"],
+        #  rdic["interval"], self)
 
-    pin = rdic["user_code"]
-    url = rdic["verification_url"]
-    exp = int(rdic["expires_in"])
-    ntv = int(rdic["interval"])
+        pin = rdic["user_code"]
+        url = rdic["verification_url"]
+        exp = int(rdic["expires_in"])
+        ntv = int(rdic["interval"])
 
-    self.logindialog = interface.loginDialog("simkl-LoginDialog.xml",
-      __addon__.getAddonInfo("path"), pin=pin, url=url,
-      check_login=self.check_login, log=log, exp=exp, inter=ntv, api=self)
-    self.logindialog.doModal()
-    del self.logindialog
+        self.logindialog = interface.loginDialog("simkl-LoginDialog.xml",
+            __addon__.getAddonInfo("path"), pin=pin, url=url,
+            check_login=self.check_login, log=log, exp=exp, inter=ntv, api=self)
+        self.logindialog.doModal()
+        del self.logindialog
 
-  def set_atoken(self, token):
-    global ATOKEN
-    with open(USERFILE, "w") as f:
-      f.write(token)
-    ATOKEN = token
-    headers["authorization"] = "Bearer "+token
-    self.token = token
+    def set_atoken(self, token):
+        global ATOKEN
+        with open(USERFILE, "w") as f:
+            f.write(token)
+        ATOKEN = token
+        headers["authorization"] = "Bearer "+token
+        self.token = token
 
-  def check_login(self, ucode, log): #Log is the connection
-    url = "/oauth/pin/" + ucode + "?client_id=" + APIKEY
-    log.request("GET", url, headers=headers)
-    r = json.loads(log.getresponse().read().decode("utf-8"))
-    xbmc.log("Simkl:" + str(r))
-    if r["result"] == "OK":
-      self.set_atoken(r["access_token"])
-      log.request("GET", "/users/settings", headers=headers)
-      r = json.loads(log.getresponse().read().decode("utf-8"))
-      self.USERSETTINGS = r
-      return True
-    elif r["result"] == "KO":
-      return False
+    def check_login(self, ucode, log): #Log is the connection
+        url = "/oauth/pin/" + ucode + "?client_id=" + APIKEY
+        log.request("GET", url, headers=headers)
+        r = json.loads(log.getresponse().read().decode("utf-8"))
+        xbmc.log("Simkl:" + str(r))
+        if r["result"] == "OK":
+            self.set_atoken(r["access_token"])
+            log.request("GET", "/users/settings", headers=headers)
+            r = json.loads(log.getresponse().read().decode("utf-8"))
+            self.USERSETTINGS = r
+            return True
+        elif r["result"] == "KO":
+            return False
 
-  def is_user_logged(self):
-    """ Checks if user is logged in """
-    failed = False
-    if "error" in self.USERSETTINGS.keys(): failed = self.USERSETTINGS["error"]
-    if self.token == "" or failed == "user_token_failed":
-      xbmc.log("Simkl: User not logged in")
-      return False
-    else:
-      return True
-
-  ### SCROBBLING OR CHECKIN
-  def lock(self, fname, duration):
-    xbmc.log("Duration: %s" %duration)
-    exp = self.scrobbled_dict
-    exp[fname] = int(time.time() + (105 - float(__addon__.getSetting("scr-pct"))) / 100 * duration)
-    xbmc.log("Simkl: Locking {}".format(exp))
-
-  def is_locked(self, fname):
-    exp = self.scrobbled_dict
-    if not (fname in exp.keys()): return 0
-    xbmc.log("Time: {}, exp: {}, Dif: {}".format(int(time.time()), exp[fname], int(exp[fname]-time.time())))
-    #When Dif reaches 0, scrobble.
-    if time.time() < exp[fname]:
-      xbmc.log("Simkl: Can't scrobble, file locked (alredy scrobbled)")
-      xbmc.log(str(exp))
-      return 1
-    else:
-      del exp[fname]
-      return 0
-
-  def watched(self, filename, mediatype, duration, date=time.strftime('%Y-%m-%d %H:%M:%S'), cnt=0): #OR IDMB, member: only works with movies
-    filename = filename.replace("\\", "/")
-    if self.is_user_logged() and not self.is_locked(filename):
-      try:
-        con = httplib.HTTPSConnection("api.simkl.com")
-        mediadict = {"movie": "movies", "episode":"episodes", "show":"show"}
-
-        if filename[:2] == "tt":
-          toappend = {"ids":{"imdb":filename}, "watched_at":date}
-          media = mediadict[mediatype]
+    def is_user_logged(self):
+        """ Checks if user is logged in """
+        failed = False
+        if "error" in self.USERSETTINGS.keys(): failed = self.USERSETTINGS["error"]
+        if self.token == "" or failed == "user_token_failed":
+            xbmc.log("Simkl: User not logged in")
+            interface.login(0)
+            return False
         else:
-          xbmc.log("Simkl: Filename - {}".format(filename))
-          values = {"file":filename}
-          values = json.dumps(values)
-          xbmc.log("Simkl: Query: {}".format(values))
-          con.request("GET", "/search/file/", body=values, headers=headers)
-          r1 = con.getresponse().read().decode("utf-8")
-          xbmc.log("Simkl: Response: {}".format(r1))
-          r = json.loads(r1)
-          if r == []:
-            xbmc.log("Simkl: Couldn't scrobble: Null Response")
+            #interface.login(self.USERSETTINGS["user"]["name"])
+            interface.login(1)
+            return True
+
+    ### SCROBBLING OR CHECKIN
+    def lock(self, fname, duration):
+        xbmc.log("Duration: %s" %duration)
+        exp = self.scrobbled_dict
+        exp[fname] = int(time.time() + (105 - float(__addon__.getSetting("scr-pct"))) / 100 * duration)
+        xbmc.log("Simkl: Locking {}".format(exp))
+
+    def is_locked(self, fname):
+        exp = self.scrobbled_dict
+        if not (fname in exp.keys()): return 0
+        xbmc.log("Time: {}, exp: {}, Dif: {}".format(int(time.time()), exp[fname], int(exp[fname]-time.time())))
+        #When Dif reaches 0, scrobble.
+        if time.time() < exp[fname]:
+            xbmc.log("Simkl: Can't scrobble, file locked (alredy scrobbled)")
+            xbmc.log(str(exp))
+            return 1
+        else:
+            del exp[fname]
             return 0
-          media = mediadict[r["type"]]
-          toappend = {"ids": r[r["type"]]["ids"], "watched_at":date}
 
-        tosend = {}
-        tosend[media] = []
-        tosend[media].append(toappend)
-        tosend = json.dumps(tosend)
+    def watched(self, filename, mediatype, duration, date=time.strftime('%Y-%m-%d %H:%M:%S'), cnt=0): #OR IDMB, member: only works with movies
+        filename = filename.replace("\\", "/")
+        if self.is_user_logged() and not self.is_locked(filename):
+            try:
+                con = httplib.HTTPSConnection("api.simkl.com")
+                mediadict = {"movie": "movies", "episode":"episodes", "show":"show"}
 
-        xbmc.log("Simkl: values {}".format(tosend))
-        con.request("GET", "/sync/history/", body=tosend, headers=headers)
-        r = con.getresponse().read().decode("utf-8")
-        xbmc.log("Simkl: {}".format(r))
+                if filename[:2] == "tt":
+                    toappend = {"ids":{"imdb":filename}, "watched_at":date}
+                    media = mediadict[mediatype]
+                else:
+                    xbmc.log("Simkl: Filename - {}".format(filename))
+                    values = {"file":filename}
+                    values = json.dumps(values)
+                    xbmc.log("Simkl: Query: {}".format(values))
+                    con.request("GET", "/search/file/", body=values, headers=headers)
+                    r1 = con.getresponse().read().decode("utf-8")
+                    xbmc.log("Simkl: Response: {}".format(r1))
+                    r = json.loads(r1)
+                    if r == []:
+                        xbmc.log("Simkl: Couldn't scrobble: Null Response")
+                        return 0
+                    media = mediadict[r["type"]]
+                    toappend = {"ids": r[r["type"]]["ids"], "watched_at":date}
 
-        success = max(json.loads(r)["added"].values())
-        if success: self.lock(filename, duration)
-        return success
+                tosend = {}
+                tosend[media] = []
+                tosend[media].append(toappend)
+                tosend = json.dumps(tosend)
 
-      except httplib.BadStatusLine:
-        xbmc.log("Simkl: {}".format("ERROR: httplib.BadStatusLine"))
-      except SSLError: #Fix #8
-        xbmc.log("Simkl: ERROR: SSLError, retrying?")
-        if cnt == 0: interface.notify("Error at scrobbling. Try number %s" % cnt+1)
-        if cnt <= 3:
-          self.watched(filename, mediatype, duration, date=date, cnt=cnt+1)
-        else: interface.notify("I give up :(")
+                xbmc.log("Simkl: values {}".format(tosend))
+                con.request("GET", "/sync/history/", body=tosend, headers=headers)
+                r = con.getresponse().read().decode("utf-8")
+                xbmc.log("Simkl: {}".format(r))
 
-    else:
-      xbmc.log("Simkl: Can't scrobble. User not logged in or file locked")
-      return 0
+                success = max(json.loads(r)["added"].values())
+                if success:
+                    self.scrobbled_dict
+                    self.lock(filename, duration)
+                return success
+
+            except httplib.BadStatusLine:
+                xbmc.log("Simkl: {}".format("ERROR: httplib.BadStatusLine"))
+            except SSLError: #Fix #8
+                xbmc.log("Simkl: ERROR: SSLError, retrying?")
+                if cnt == 0: interface.notify("Error at scrobbling. Try number %s" % cnt+1)
+                if cnt <= 3:
+                    self.watched(filename, mediatype, duration, date=date, cnt=cnt+1)
+                else: interface.notify("I give up :(")
+
+        else:
+            xbmc.log("Simkl: Can't scrobble. User not logged in or file locked")
+            return 0
 
 api = API()
 if __name__ == "__main__":
-  if sys.argv[1] == "login":
-    xbmc.log("Logging in", level=xbmc.LOGDEBUG)
-    api.login()
-  if sys.argv[1] == "test":
-    api.scrobble_from_filename("South Park S01E02")
+    if sys.argv[1] == "login":
+        xbmc.log("Logging in", level=xbmc.LOGDEBUG)
+        api.login()
+    if sys.argv[1] == "test":
+        api.scrobble_from_filename("South Park S01E02")
