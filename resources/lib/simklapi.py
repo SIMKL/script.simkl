@@ -17,13 +17,15 @@ __addon__ = interface.__addon__
 def getstr(strid): return interface.getstr(strid)
 
 REDIRECT_URI = "http://simkl.com"
-USERFILE     = xbmc.translatePath("special://profile/simkl_key")
+USERFILE     = xbmc.translatePath(__addon__.getAddonInfo("profile")).decode("utf-8") + "simkl_key"
+xbmc.translatePath("special://profile/simkl_key")
+
 if not os.path.exists(USERFILE):
     with open(USERFILE, "w") as f:
         f.write("")
 else:
     with open(USERFILE, "r") as f:
-        print(xbmc.log("Simkl Userfile " + str(f.read())))
+        xbmc.log("Simkl Userfile " + str(f.read()))
 
 with open(os.path.dirname(os.path.realpath(__file__)).strip("lib") + "data/apikey") as f:
     d = json.loads(f.read())
@@ -119,6 +121,7 @@ class API:
         exp = self.scrobbled_dict
         exp[fname] = int(time.time() + (105 - float(__addon__.getSetting("scr-pct"))) / 100 * duration)
         xbmc.log("Simkl: Locking {}".format(exp))
+        self.scrobbled_dict = {fname:exp[fname]} #So there is always only one entry on the dict
 
     def is_locked(self, fname):
         exp = self.scrobbled_dict
@@ -149,9 +152,10 @@ class API:
                     values = json.dumps(values)
                     xbmc.log("Simkl: Query: {}".format(values))
                     con.request("GET", "/search/file/", body=values, headers=headers)
-                    r1 = con.getresponse().read().decode("utf-8")
+                    r1 = con.getresponse().read()#.decode("utf-8")
                     xbmc.log("Simkl: Response: {}".format(r1))
-                    r = json.loads(r1)
+                    r = json.loads(str(r1))
+                    self.lastwatched = r
                     if r == []:
                         xbmc.log("Simkl: Couldn't scrobble: Null Response")
                         return 0
@@ -178,10 +182,10 @@ class API:
                 xbmc.log("Simkl: {}".format("ERROR: httplib.BadStatusLine"))
             except SSLError: #Fix #8
                 xbmc.log("Simkl: ERROR: SSLError, retrying?")
-                if cnt == 0: interface.notify("Error at scrobbling. Try number %s" % cnt+1)
+                if cnt == 0: interface.notify(getstr(32029).format(cnt+1))
                 if cnt <= 3:
                     self.watched(filename, mediatype, duration, date=date, cnt=cnt+1)
-                else: interface.notify("I give up :(")
+                else: interface.notify("SSLError")
 
         else:
             xbmc.log("Simkl: Can't scrobble. User not logged in or file locked")
@@ -192,5 +196,3 @@ if __name__ == "__main__":
     if sys.argv[1] == "login":
         xbmc.log("Logging in", level=xbmc.LOGDEBUG)
         api.login()
-    if sys.argv[1] == "test":
-        api.scrobble_from_filename("South Park S01E02")

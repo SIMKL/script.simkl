@@ -25,7 +25,7 @@ ACTION_BACK = 92
 #xmlfile = ""
 #script  = __addon__.getAddonInfo("path").decode("utf-8")
 def login(logged):
-    "Change the things that need to be changed. E.g: The settings dialog"
+    """Change the things that need to be changed. E.g: The settings dialog"""
     __addon__.setSetting("loginbool", str(bool(1)).lower())
 
 class loginDialog(xbmcgui.WindowXMLDialog):
@@ -51,7 +51,7 @@ class loginDialog(xbmcgui.WindowXMLDialog):
                 if self.check_login(self.pin, self.log):
 
                     xbmc.log(str(self.api.USERSETTINGS))
-                    notify("Hello {}".format(self.api.USERSETTINGS["user"]["name"]))
+                    notify(getstr(32030).format(self.api.USERSETTINGS["user"]["name"]))
                     self.waiting = False
                     #Now check that the user has done what it has to be done
 
@@ -59,7 +59,7 @@ class loginDialog(xbmcgui.WindowXMLDialog):
             time.sleep(1)
             if self.canceled or cnt >= self.exp:
                 self.waiting = False
-                notify("Couldn't log in")
+                notify(getstr(32031))
 
         xbmc.log("Simkl: Stop waiting")
         self.close()
@@ -70,18 +70,22 @@ class loginDialog(xbmcgui.WindowXMLDialog):
         instruction.setLabel(
             getstr(32022).format("[COLOR ffffbf00]" + self.url + "[/COLOR]"))
         self.getControl(PIN_LABEL).setLabel(self.pin)
+        xbmc.log("Simkl: Visible: {}".format(self.getProperty("visible")))
 
-        #t = threading.Thread(target=self.threaded)
+        t = threading.Thread(target=self.threaded)
+        t.start()
 
         if API.is_user_logged(): #If user is alredy logged in
             dialog = xbmcgui.Dialog()
             username = API.USERSETTINGS["user"]["name"]
-            ret = dialog.yesno("Simkl LogIn Warning", "You are alredy logged in as {}".format(username),
-                nolabel="Cancel", yeslabel="Continue", autoclose=30000)
+            ret = dialog.yesno("Simkl LogIn Warning", getstr(32032).format(username),
+                nolabel=getstr(32034), yeslabel=getstr(32033), autoclose=30000)
             #xbmc.log("Ret: {}".format(ret))
             xbmc.log("Simkl:ret: {}".format(ret))
-            if ret == 1: pass #t.start()
-            elif ret == 0: self.onClick(CANCEL_BUTTON)
+            if ret == 1: pass
+            elif ret == 0:
+                self.onClick(CANCEL_BUTTON)
+            return
 
     def onControl(self, controlID):
         pass
@@ -90,6 +94,7 @@ class loginDialog(xbmcgui.WindowXMLDialog):
 
     def onAction(self, action):
         if action == ACTION_PREVIOUS_MENU or action == ACTION_BACK:
+            self.canceled = True
             self.close()
 
     def onClick(self, controlID):

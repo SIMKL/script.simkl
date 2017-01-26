@@ -74,6 +74,30 @@ msgctxt "#32028"
 msgid "Scrobbling {}"
 msgstr ""
 
+msgctxt "#32029"
+msgid "Error at scrobbling. Retrying ({})"
+msgstr ""
+
+msgctxt "#32030"
+msgid "Login successful, {}"
+msgstr ""
+
+msgctxt "#32031"
+msgid "Couldn't log in"
+msgstr ""
+
+msgctxt "#32032"
+msgid "You are alredy logged in as {}"
+msgstr ""
+
+msgctxt "#32033"
+msgid "Continue"
+msgstr ""
+
+msgctxt "#32034"
+msgid "Cancel"
+msgstr ""
+
 #msgctxt "#"
 #msgid ""
 #msgstr ""

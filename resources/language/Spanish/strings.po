@@ -49,8 +49,8 @@ msgid "Simkl login"
 msgstr "Inicio de sesión en Simkl"
 
 msgctxt "#32022"
-msgid "Enter to the following URL: {}"
-msgstr "Entra a la siguiente URL: {}"
+msgid "Please visit {} on \nyour device and enter this code"
+msgstr "Por favor visita {}\n en tu dispositivo e introduce el código"
 
 msgctxt "#32023"
 msgid "Remaining time: {}/{}"
@@ -70,8 +70,8 @@ msgctxt "#32027"
 msgid "You don't have internet"
 msgstr "No tienes conexión a internet"
 
-msgctxt "#32028" 
-msgid "Scrobbling {}" 
+msgctxt "#32028"
+msgid "Scrobbling {}"
 msgstr "Scrobbling {}"
 
 #msgctxt "#"
