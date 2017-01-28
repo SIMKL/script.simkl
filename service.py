@@ -17,16 +17,17 @@ autoscrobble = __addon__.getSetting("autoscrobble")
 def getstr(strid): return __addon__.getLocalizedString(strid)
 
 try:
-    with open(xbmc.translatePath(__addon__.getAddonInfo("path")).decode("utf-8") +"/resources/data/compdate.txt", "r") as f:
+    compdatefile = os.path.join(__addon__.getAddonInfo("path").decode("utf-8"), "resources", "data", "compdate.txt")
+    with open(xbmc.translatePath(compdatefile), "r") as f:
         __compdate__ = f.read()
-except IOERROR:
+except:
     __compdate__ = "ERROR: No such file or directory"
 
 if __name__ == "__main__":
     xbmc.log("Simkl dir: " + str(xbmc.translatePath("special://home")))
     xbmc.log("Simkl | Python Version: " + str(sys.version))
     xbmc.log("Simkl | "+ str(sys.argv), level=xbmc.LOGDEBUG)
-    xbmc.log("Simkl | compdate: {}".format(__compdate__))
+    xbmc.log("Simkl | compdate: {0}".format(__compdate__))
     monitor = xbmc.Monitor()
 
     player  = engine.Player()
