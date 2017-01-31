@@ -8,17 +8,21 @@
   </requires>
   <extension point="xbmc.service" library="service.py" start="login" />
   <extension point="xbmc.addon.metadata">
-    <summary lang="en_gb">Simkl Scrobbler with AI file detection system</summary>
-    <disclaimer lang="en_gb">Not tested on Android</disclaimer>
-    <description lang="en_gb">Automatically set Movies and TV Shows\Anime as watched on Simkl.com. Simkl knows what you're watching, tells you episodes you've missed, and connects you to what your friends are into.</description>
+    <summary lang="en">Simkl Scrobbler with AI file detection system</summary>
+    <summary lang="en_US">Simkl Scrobbler with AI file detection system</summary>
+    <description lang="en">Automatically set Movies and TV Shows\Anime as watched on Simkl.com. Simkl knows what you're watching, tells you episodes you've missed, and connects you to what your friends are into.</description>
+    <description lang="en_US">Automatically set Movies and TV Shows\Anime as watched on Simkl.com. Simkl knows what you're watching, tells you episodes you've missed, and connects you to what your friends are into.</description>
+    <disclaimer lang="en">Not tested on Android</disclaimer>
     <platform>all</platform>
     <license>GPLv3</license>
+    <forum>http://forum.kodi.tv/showthread.php?tid=305324</forum>
+    <website>https://simkl.com</website>
     <email>david@ddavo.me</email>
     <source>https://github.com/SIMKL/script.simkl</source>
     <assets>
       <icon>resources/icon.png</icon>
       <fanart>resources/fanart.png</fanart>
     </assets>
-    <language></language>
+    <language>en</language>
   </extension>
 </addon>
