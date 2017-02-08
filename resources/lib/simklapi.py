@@ -13,7 +13,7 @@ import httplib
 __addon__ = interface.__addon__
 def getstr(strid): return interface.getstr(strid)
 
-REDIRECT_URI = "http://simkl.com"
+REDIRECT_URI = "https://simkl.com/apps/kodi/connected"
 USERFILE     = os.path.join(xbmc.translatePath(__addon__.getAddonInfo("profile")).decode("utf-8"), "simkl_key")
 xbmc.translatePath("special://profile/simkl_key")
 
@@ -132,7 +132,8 @@ class API:
     def is_locked(self, fname):
         exp = self.scrobbled_dict
         if not (fname in exp.keys()): return 0
-        xbmc.log("Time: {0}, exp: {1}, Dif: {2}".format(int(time.time()), exp[fname], int(exp[fname]-time.time())))
+        xbmc.log("Time: {0}, exp: {1}, Dif: {2}".format(int(time.time()),
+            exp[fname], int(exp[fname]-time.time())))
         #When Dif reaches 0, scrobble.
         if time.time() < exp[fname]:
             xbmc.log("Simkl: Can't scrobble, file locked (alredy scrobbled)")
@@ -201,6 +202,17 @@ class API:
         else:
             xbmc.log("Simkl: Can't scrobble. User not logged in or file locked")
             return 0
+
+    def check_if_watched(self, item):
+        con = httplib.HTTPSConnection("api.simkl.com")
+        values = json.dumps([{
+            "type":"movie",
+            "imdb": item["imdbnumber"]
+            }])
+        con.request("GET", "/sync/watched", body=values, headers=headers)
+        r1 = con.getresponse().read()
+        xbmc.log("Simkl: {}".format(r1))
+        return json.loads(r1)[0]["result"]
 
     def check_connection(self, cnt=0):
         if cnt < 3:

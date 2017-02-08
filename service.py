@@ -33,10 +33,6 @@ if __name__ == "__main__":
     player  = engine.Player()
     player.addon = __addon__
     eng     = engine.Engine(API.api, player)
-    #Remember: if getTime() is more than x% scrobble file
-
-    #Testing:
-    #API.api.login()
 
     if API.api.internet == False:
         interface.notify(getstr(32027))
@@ -45,6 +41,9 @@ if __name__ == "__main__":
         #interface.notify(getstr(32026))
     else:
         interface.notify(getstr(32025).format(API.api.USERSETTINGS["user"]["name"]))
+
+    #Only for testing purposes:
+    eng.synclibrary()
 
     #__addon__.openSettings()
     while not monitor.abortRequested():

@@ -14,45 +14,49 @@ class Engine:
     self.player = player
     player.engine = self
     player.api    = api
-    self.synclibrary()
 
   def synclibrary(self):
-    ### UPLOAD ###
-    #DISABLED UNTIL WORKING FINE
-    pass
-    # kodilibrary = xbmc.executeJSONRPC(json.dumps({
-    #   "jsonrpc": "2.0",
-    #   "method": "VideoLibrary.GetMovies",
-    #   "params": {
-    #   "limits": {
-    #     "start": 0,
-    #     "end": 1000
-    #   },
-    #   "properties": [
-    #     "playcount",
-    #     "imdbnumber",
-    #     "file",
-    #     "lastplayed"
-    #   ],
-    #   "sort": {
-    #     "order": "ascending",
-    #     "method": "label",
-    #     "ignorearticle": True
-    #   }
-    #   },
-    #   "id": "libMovies"
-    # }))
-    # xbmc.log("Simkl: Ret: {0}".format(kodilibrary))
-    # kodilibrary = json.loads(kodilibrary)
+    xbmc.log("Simkl: Syncing library (Simkl to Kodi)")
+    kodilibrary = xbmc.executeJSONRPC(json.dumps({
+      "jsonrpc": "2.0",
+      "method": "VideoLibrary.GetMovies",
+      "params": {
+      "limits": {
+        "start": 0,
+        "end": 1000
+      },
+      "properties": [
+        "playcount",
+        "imdbnumber",
+        "file",
+        "lastplayed"
+      ],
+      "sort": {
+        "order": "ascending",
+        "method": "label",
+        "ignorearticle": True
+      }
+      },
+      "id": "libMovies"
+    }))
+    kodilibrary = json.loads(kodilibrary)
+    if kodilibrary["result"]["limits"]["total"] > 0:
+      for movie in kodilibrary["result"]["movies"]:
+        ### DOWNLOAD FROM KODI
+        #Separate big list in chunks
+        if self.api.check_if_watched(movie):
+          xbmc.log("Simkl: {0}".format(movie))
+          ret = xbmc.executeJSONRPC(json.dumps({
+              "jsonrpc": "2.0",
+              "method": "VideoLibrary.SetMovieDetails",
+              "params": {
+                "playcount":max(movie["playcount"], 1),
+                #"lastplayed":"",
+                "movieid":movie["movieid"]
+              }
+            }))
+          xbmc.log(ret)
 
-    # if kodilibrary["result"]["limits"]["total"] > 0:
-    #   for movie in kodilibrary["result"]["movies"]:
-    #     #Dont do that, upload all at once
-
-    #     if movie["playcount"] > 0:
-    #       imdb = movie["imdbnumber"]
-    #       date = movie["lastplayed"]
-    #       self.api.watched(imdb, "movie", date)
 
 class Player(xbmc.Player):
   def __init__(self):
