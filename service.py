@@ -20,7 +20,7 @@ try:
     compdatefile = os.path.join(__addon__.getAddonInfo("path").decode("utf-8"), "resources", "data", "compdate.txt")
     with open(xbmc.translatePath(compdatefile), "r") as f:
         __compdate__ = f.read()
-except:
+except IOError:
     __compdate__ = "ERROR: No such file or directory"
 
 if __name__ == "__main__":

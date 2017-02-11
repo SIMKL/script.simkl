@@ -2,8 +2,6 @@
 # -*- coding: UTF-8 -*-
 
 import sys, os, time
-#import urllib
-#import request
 import json
 
 import xbmc
@@ -59,6 +57,7 @@ class API:
             self.internet = False
 
     def login(self):
+        """ Logins the API class to Simkl """
         url = "/oauth/pin?client_id="
         url += APIKEY + "&redirect=" + REDIRECT_URI
 
@@ -139,7 +138,8 @@ class API:
             del exp[fname]
             return 0
 
-    def watched(self, filename, mediatype, duration, date=time.strftime('%Y-%m-%d %H:%M:%S'), cnt=0): #OR IDMB, member: only works with movies
+    def watched(self, filename, mediatype, duration, date=time.strftime('%Y-%m-%d %H:%M:%S'), cnt=0):
+        """ Filename can also be an imdb number """
         filename = filename.replace("\\", "/")
         if self.is_user_logged() and not self.is_locked(filename):
             try:
@@ -194,16 +194,31 @@ class API:
             xbmc.log("Simkl: Can't scrobble. User not logged in or file locked")
             return 0
 
-    def check_if_watched(self, item):
+    def get_all_items(self, mediatype):
+        """
+            mediatype can be 'shows', 'movies' or 'anime'
+            http://docs.simkl.apiary.io/#reference/sync/last-activities/get-all-items-in-the-user's-watchlist 
+        """
         con = httplib.HTTPSConnection("api.simkl.com")
-        values = json.dumps([{
-            "type":"movie",
-            "imdb": item["imdbnumber"]
-            }])
-        con.request("GET", "/sync/watched", body=values, headers=headers)
-        r1 = con.getresponse().read()
-        xbmc.log("Simkl: {}".format(r1))
-        return json.loads(r1)[0]["result"]
+        con.request("GET", "/sync/all-items/{0}?extended=full".format(mediatype), headers=headers)
+        return con.getresponse().read()
+
+    def check_if_watched(self, item, movie=True):
+        """ Checks if an item has been watched """
+        con = httplib.HTTPSConnection("api.simkl.com")
+        if movie:
+            values = json.dumps([{
+                "type": item["media"],
+                "imdb": item["imdbnumber"]
+                }])
+            con.request("GET", "/sync/watched", body=values, headers=headers)
+            r1 = con.getresponse().read()
+            xbmc.log("Simkl: {}".format(r1))
+            return json.loads(r1)[0]["result"]
+        else:
+            values = json.dumps(item)
+            con.request("GET", "/sync/watched", body=values, headers=headers)
+            return json.loads(con.getresponse().read())
 
 api = API()
 if __name__ == "__main__":
