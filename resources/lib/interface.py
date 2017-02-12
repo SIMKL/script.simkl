@@ -29,6 +29,7 @@ def login(logged):
     __addon__.setSetting("loginbool", str(bool(1)).lower())
 
 class loginDialog(xbmcgui.WindowXMLDialog):
+    """ The login dialog popped when you click on LogIn """
     def __init__(self, xmlFilename, scriptPath, pin, url, check_login, log,
         exp=900, inter=5, api=None):
         self.pin = pin
@@ -101,3 +102,14 @@ class loginDialog(xbmcgui.WindowXMLDialog):
         xbmc.log("Simkl: onclick {0}, {1}".format(controlID, self))
         if controlID == CANCEL_BUTTON:
             self.canceled = True
+
+class SyncProgress(xbmcgui.DialogProgressBG):
+    def __init__(self, media="None", mode="None"):
+        self.cnt = 0
+        self.msg = "Simkl: Syncing {0} library, {1} mode".format(media, mode)
+        self.create(self.msg, "Starting")
+
+    def push(self, i, message=None):
+        self.cnt += i
+        self.update(int(self.cnt), message=message)
+

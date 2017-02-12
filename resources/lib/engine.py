@@ -14,134 +14,150 @@ class Engine:
     player.engine = self
     player.api    = api
 
-  def synclibrary(self):
+  def synclibrary(self, mode="quick"):
+    """
+      Fetches the library from Simkl to Kodi
+      Mode can be "quick" or "full"
+    """
     xbmc.log("Simkl: Syncing library (Simkl to Kodi)")
 
-    todump = {
-      "jsonrpc": "2.0",
-      "method": "VideoLibrary.GetMovies",
-      "params": {
-        "limits": {
-          "start": 0,
-          "end": 1000
+    mode = "full"
+
+    if mode == "full":
+      todump = {
+        "jsonrpc": "2.0",
+        "method": "VideoLibrary.GetMovies",
+        "params": {
+          "limits": {
+            "start": 0,
+            "end": 1000
+          },
+          "properties": [
+            "playcount",
+            "imdbnumber",
+            "file",
+            "lastplayed",
+            "year"
+          ],
+          "sort": {
+            "order": "ascending",
+            "method": "playcount",
+            #"ignorearticle": True
+          }
         },
-        "properties": [
-          "playcount",
-          "imdbnumber",
-          "file",
-          "lastplayed"
-        ],
-        "sort": {
-          "order": "ascending",
-          "method": "label",
-          "ignorearticle": True
-        }
-      },
-      "id": "libMovies"
-    }
-    kodilibrary = xbmc.executeJSONRPC(json.dumps(todump))
-    kodilibrary = json.loads(kodilibrary)
-    #Use result limits total to make a percentage dialog
-    if kodilibrary["result"]["limits"]["total"] > 0:
-      for movie in kodilibrary["result"]["movies"]:
-        break
-        ### DOWNLOAD FROM KODI
-        #Separate big list in chunks
-        movie["media"] = "movie"
-        if self.api.check_if_watched(movie):
-          xbmc.log("Simkl: {0}".format(movie))
-          ret = xbmc.executeJSONRPC(json.dumps({
-              "jsonrpc": "2.0",
-              "method": "VideoLibrary.SetMovieDetails",
-              "params": {
-                "playcount":max(movie["playcount"], 1),
-                #"lastplayed":"",
-                "movieid":movie["movieid"]
-              }
-            }))
-          xbmc.log(ret)
+        "id": "libMovies"
+      }
+      kodilibrary = json.loads(xbmc.executeJSONRPC(json.dumps(todump)))
+      if kodilibrary["result"]["limits"]["total"] > 0:
+        xbmc.log(str(kodilibrary))
+        progress = interface.SyncProgress("movies", "full")
+        each = float(100) / kodilibrary["result"]["limits"]["total"]
+        for movie in kodilibrary["result"]["movies"]:
+          progress.push(each, "{0} ({1})".format(movie["label"], movie["year"]))
+          if movie["playcount"] == 0:
+            ### DOWNLOAD FROM KODI
+            #Separate big list in chunks
+            movie["media"] = "movie"
+            if self.api.check_if_watched(movie):
+              xbmc.log("Simkl: {0}".format(movie))
+              ret = xbmc.executeJSONRPC(json.dumps({
+                  "jsonrpc": "2.0",
+                  "method": "VideoLibrary.SetMovieDetails",
+                  "params": {
+                    "playcount": 1,
+                    #"lastplayed":"",
+                    "movieid":movie["movieid"]
+                  }
+                }))
+              #xbmc.log(ret)
+        del progress
 
-    todump["method"] = "VideoLibrary.GetTVShows"
-    todump["params"]["properties"] = ["imdbnumber", "title", "watchedepisodes"]
-    #If watchedepisodes > 0
-    kodilibrary = xbmc.executeJSONRPC(json.dumps(todump))
-    kodilibrary = json.loads(kodilibrary)
-    debug_cnt = 0
-    if kodilibrary["result"]["limits"]["total"] >0:
-      for tvshow in kodilibrary["result"]["tvshows"]:
-        #if debug_cnt >= 3: break #I have a lot of TV Shows, only for testing
-        debug_cnt += 1
+      todump["method"] = "VideoLibrary.GetTVShows"
+      todump["params"]["properties"] = ["imdbnumber", "title", "watchedepisodes"]
+      #If watchedepisodes > 0
+      kodilibrary = xbmc.executeJSONRPC(json.dumps(todump))
+      kodilibrary = json.loads(kodilibrary)
 
-        todump["method"] = "VideoLibrary.GetSeasons"
-        #todump["params"]["Library.Id"] = tvshow["tvshowid"]
-        todump["id"] = tvshow["tvshowid"]
-        todump["params"]["properties"] = ["season", "episode", "watchedepisodes", "showtitle"]
-        seasons = xbmc.executeJSONRPC(json.dumps(todump))
-        xbmc.log(json.dumps(tvshow))
-        xbmc.log(seasons)
-        seasons = json.loads(seasons)
+      if kodilibrary["result"]["limits"]["total"] > 0:
+        progress = interface.SyncProgress("TV Shows", "full")
+        each = float(100) / kodilibrary["result"]["limits"]["total"]
+        debug_cnt = 0
+        for tvshow in kodilibrary["result"]["tvshows"]:
+          #if debug_cnt >= 10: break #I have a lot of TV Shows, only for testing
+          progress.push(each, tvshow["label"])
+          debug_cnt += 1
 
 
-        for season in seasons["result"]["seasons"]:
-          values = []
+          todump["method"] = "VideoLibrary.GetSeasons"
+          #todump["params"]["Library.Id"] = tvshow["tvshowid"]
+          todump["id"] = tvshow["tvshowid"]
+          todump["params"]["properties"] = ["season", "episode", "watchedepisodes", "showtitle"]
+          seasons = xbmc.executeJSONRPC(json.dumps(todump))
+          xbmc.log(json.dumps(tvshow))
+          xbmc.log(seasons)
+          seasons = json.loads(seasons)
 
-          todump["method"] = "VideoLibrary.GetEpisodes"
-          todump["params"]["tvshowid"] = tvshow["tvshowid"]
-          todump["params"]["season"] = season["season"]
-          todump["params"]["properties"] = ["title", "rating", "playcount",
-            "season", "episode", "showtitle", "lastplayed", "tvshowid"]
 
-          episodes = xbmc.executeJSONRPC(json.dumps(todump))
-          xbmc.log(episodes)
-          episodes = json.loads(episodes)
+          for season in seasons["result"]["seasons"]:
+            values = []
 
-          if episodes["result"]["limits"]["total"] > 0:
-            for episode in episodes["result"]["episodes"]:
-              values.append({
-                  "type": "tv",
-                  "season": episode["season"],
-                  "episode": episode["episode"],
-                  "title": episode["showtitle"],
-                  "tvdb": tvshow["imdbnumber"]
-              })
+            todump["method"] = "VideoLibrary.GetEpisodes"
+            todump["params"]["tvshowid"] = tvshow["tvshowid"]
+            todump["params"]["season"] = season["season"]
+            todump["params"]["properties"] = ["title", "rating", "playcount",
+              "season", "episode", "showtitle", "lastplayed", "tvshowid"]
 
-            watched = self.api.check_if_watched(values, False)
-            xbmc.log(json.dumps(watched))
+            episodes = xbmc.executeJSONRPC(json.dumps(todump))
+            xbmc.log(episodes)
+            episodes = json.loads(episodes)
 
-            for i, episode in enumerate(episodes["result"]["episodes"]):
-              toupdate = {
-                "jsonrpc": "2.0",
-                "method": "VideoLibrary.SetEpisodeDetails",
-                "params": {
-                  "episodeid":episode["episodeid"],
-                  "playcount": int(watched[i]["result"]),
-                },
-                "id": "libMovies"
-              }
-              try:
-                toupdate["params"]["lastplayed"] = watched[i]["last_watched"]
-              except KeyError:
-                toupdate["params"]["lastplayed"] = ""
+            if episodes["result"]["limits"]["total"] > 0:
+              for episode in episodes["result"]["episodes"]:
+                values.append({
+                    "type": "tv",
+                    "season": episode["season"],
+                    "episode": episode["episode"],
+                    "title": episode["showtitle"],
+                    "tvdb": tvshow["imdbnumber"]
+                })
 
-              info = xbmc.executeJSONRPC(json.dumps(toupdate))
-              xbmc.log("Simkl: Info: {0}".format(info))
+              watched = self.api.check_if_watched(values, False)
+              xbmc.log(json.dumps(watched))
 
-          del todump["params"]["tvshowid"]
-          del todump["params"]["season"]
+              for i, episode in enumerate(episodes["result"]["episodes"]):
+                toupdate = {
+                  "jsonrpc": "2.0",
+                  "method": "VideoLibrary.SetEpisodeDetails",
+                  "params": {
+                    "episodeid":episode["episodeid"],
+                    "playcount": int(watched[i]["result"]),
+                  },
+                  "id": "libMovies"
+                }
+                try:
+                  toupdate["params"]["lastplayed"] = watched[i]["last_watched"]
+                except KeyError:
+                  toupdate["params"]["lastplayed"] = ""
 
-    #series = self.api.get_all_items("shows")
-    #xbmc.log(series)
+                info = xbmc.executeJSONRPC(json.dumps(toupdate))
+                xbmc.log("Simkl: Info: {0}".format(info))
+
+            del todump["params"]["tvshowid"]
+            del todump["params"]["season"]
+          del progress
 
     xbmc.log("Simkl: Finished syncing library")
     interface.notify("Finished syncing library")
 
 
 class Player(xbmc.Player):
+  """ Replaces the Kodi player class """
   def __init__(self):
     xbmc.Player.__init__(self)
 
   @staticmethod
   def getMediaType():
+    """ Returns the MediaType of the file currently playing """
     if xbmc.getCondVisibility('Container.Content(tvshows)'):
       return "show"
     elif xbmc.getCondVisibility('Container.Content(seasons)'):
@@ -154,13 +170,17 @@ class Player(xbmc.Player):
       return None
 
   def onPlayBackStarted(self):
+    """ Activated at start """
     #self.onPlayBackStopped()
     pass
   def onPlayBackSeek(self, *args):
+    """ Activated on seek """
     self.onPlayBackStopped()
   def onPlayBackResumed(self):
+    """ Activated on resume """
     self.onPlayBackStopped()
   def onPlayBackEnded(self):
+    """ Activated at end """
     xbmc.log("Simkl: ONPLAYBACKENDED")
     self.onPlayBackStopped()
 

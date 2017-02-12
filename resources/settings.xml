@@ -9,12 +9,22 @@
   <setting type="sep"/>
   <category label="Options">
     <setting label="32002" type="lsep"/>
-    <setting label="32003" type="bool" id="synclib" default="false" enable="false"/>
     <setting label="Scrobbler" type="lsep"/>
     <setting label="Auto-scrobble" type="bool" id="autoscrobble" default="true" enable="false"/>
     <setting label="32006" type="slider" id="scr-pct" default="70" range="0,100" option="percent" enable="gt(-1,-2)" />
     <setting label="32007"     type="slider" id="sct-w-pct" default="10" range="0,100" option="
       percent" visible="false"/>
     <setting label="32008" type="bool" id="bubble" default="true" enable="true"/>
+  </category>
+  <category label="Syncing">
+    <setting label="32003" type="bool" id="synclib" default="false"/>
+    <setting label="Movies" type="lsep" visible="eq(-1,true)"/>
+    <setting label="Pull movies" id="movie-pull" type="bool" default="true" visible="eq(-2,true)"/>
+    <setting label="Push movies" id="movie-push" type="bool" default="false" enable="false" visible="eq(-3,true)"/>
+    <setting label="Pull mode" id="movie-mode" type="labelenum" values="complete|quick" visible="eq(-4,true)"/>
+    <setting label="TV Shows" type="lsep" visible="eq(-5,true)"/>
+    <setting label="Pull TV Shows" id="shows-pull" type="bool" default="true" visible="eq(-6,true)"/>
+    <setting label="Push TV Shows" id="shows-push" type="bool" default="false" enable="false" visible="eq(-7,true)"/>
+    <setting label="Pull mode" id="shows-mode" type="labelenum" values="complete|quick" visible="eq(-8,true)"/>
   </category>
 </settings>

@@ -1,3 +1,5 @@
+- When you log in, it redirects you to a confirmation page
+
 v 1.0.1 [18/02/04]:
 -Fixed problem when downloading from Repositories
 

@@ -23,16 +23,26 @@ try:
 except IOError:
     __compdate__ = "ERROR: No such file or directory"
 
+class Monitor(xbmc.Monitor):
+    """ http://mirrors.kodi.tv/docs/python-docs/16.x-jarvis/xbmc.html#Monitor """
+    def __init__(self, engine):
+        self.engine = engine
+
+    def onScanFinished(self):
+        """ When library scan finishes """
+        ### Connect with config
+        self.engine.synclibrary()
+
 if __name__ == "__main__":
     xbmc.log("Simkl dir: " + str(xbmc.translatePath("special://home")))
     xbmc.log("Simkl | Python Version: " + str(sys.version))
     xbmc.log("Simkl | "+ str(sys.argv), level=xbmc.LOGDEBUG)
     xbmc.log("Simkl | compdate: {0}".format(__compdate__))
-    monitor = xbmc.Monitor()
 
     player  = engine.Player()
     player.addon = __addon__
     eng     = engine.Engine(API.api, player)
+    monitor = Monitor(eng)
 
     if not API.api.is_user_logged():
         API.api.login() #Add "remind me tomorrow button"

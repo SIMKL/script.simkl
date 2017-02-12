@@ -194,7 +194,8 @@ class API:
             xbmc.log("Simkl: Can't scrobble. User not logged in or file locked")
             return 0
 
-    def get_all_items(self, mediatype):
+    @staticmethod
+    def get_all_items(mediatype):
         """
             mediatype can be 'shows', 'movies' or 'anime'
             http://docs.simkl.apiary.io/#reference/sync/last-activities/get-all-items-in-the-user's-watchlist 
@@ -203,7 +204,8 @@ class API:
         con.request("GET", "/sync/all-items/{0}?extended=full".format(mediatype), headers=headers)
         return con.getresponse().read()
 
-    def check_if_watched(self, item, movie=True):
+    @staticmethod
+    def check_if_watched(item, movie=True):
         """ Checks if an item has been watched """
         con = httplib.HTTPSConnection("api.simkl.com")
         if movie:
