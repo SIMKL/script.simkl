@@ -144,7 +144,7 @@ class Engine:
 
             del todump["params"]["tvshowid"]
             del todump["params"]["season"]
-          del progress
+        del progress
 
     xbmc.log("Simkl: Finished syncing library")
     interface.notify("Finished syncing library")
@@ -196,55 +196,28 @@ class Player(xbmc.Player):
           "playerid": 1 },
         "id": "VideoGetItem"
       }))
-      xbmc.log("Simkl: Full: {0}".format(thing))
       item = json.loads(thing)["result"]["item"]
-      #imdb  = movie.getIMDBNumber().strip(" ")
-      #fname = self.getPlayingFile()
-      imdb = item["imdbnumber"]
-      fname = item["file"]
+      fname = item["imdbnumber"]
+      if fname == "": fname = item["file"]
       media = item["type"]
-      xbmc.log("Simkl: IMDb: {0}".format(imdb))
-      xbmc.log("Simkl: Genre: {0}".format(item["genre"]))
-      xbmc.log("Simkl: MediaType: " + str(media))
 
       percentage = 100 * self.getTime() / self.getTotalTime()
       pctconfig  = int(self.addon.getSetting("scr-pct"))
 
       if 99 > percentage > pctconfig:
         bubble = __addon__.getSetting("bubble")
-        xbmc.log("Simkl: Bubble == {0}".format(bubble))
-        xbmc.log("Percentage: {0}, pctconfig {1}".format(percentage, pctconfig))
-
-        xbmc.log("Simkl: Ready to scrobble {0}".format(movie.getTitle()))
-        if imdb == "":
-        #if True:
-          xbmc.log("Simkl: No imdb - Fname: {0}".format(fname))
-          r = self.api.watched(fname, media, self.getTotalTime())
-        else:
-          xbmc.log("Simkl: IMDB: " + str(imdb))
-          r = self.api.watched(imdb, media, self.getTotalTime())
+        r = self.api.watched(fname, media, self.getTotalTime())
 
         if bubble=="true" and r:
-          if item["label"] in item["file"]:
-          #if True: #For testing purposes
-            xbmc.log("Simkl: Label and file are the same")
-            lstw = self.api.lastwatched
-            if lstw["type"] == "episode":
-              item["showtitle"] = lstw["show"]["title"]
-              item["season"] = lstw["episode"]["season"]
-              item["episode"] = lstw["episode"]["episode"]
-            elif lstw["type"] == "movie":
-              item["title"] = "".join([lstw["movie"]["title"], " (", str(lstw["movie"]["year"]), ")"])
-            media = lstw["type"]
-
-          txt = item["label"]
           title = ""
-          if media == "movie":
+          lstw = self.api.lastwatched
+          if lstw["type"] == "episode":
+            txt = lstw["show"]["title"]
+            title = "- S{:02}E{:02}".format(lstw["episode"]["season"], lstw["episode"]["episode"])
+          elif lstw["type"] == "movie":
+            item["title"] = "".join([lstw["movie"]["title"], " (", str(lstw["movie"]["year"]), ")"])
             txt = item["title"]
-          elif media == "episode":
-            txt = item["showtitle"]
-            title = "- S{:02}E{:02}".format(item["season"], item["episode"])
-          xbmc.log("Simkl: " + "; ".join([media, txt, title]))
+
           interface.notify(getstr(32028).format(title), title=txt)
           r = 0
 

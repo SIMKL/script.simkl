@@ -50,9 +50,6 @@ if __name__ == "__main__":
     else:
         interface.notify(getstr(32025).format(API.api.USERSETTINGS["user"]["name"]))
 
-    #Only for testing purposes:
-    eng.synclibrary()
-
     #__addon__.openSettings()
     while not monitor.abortRequested():
         if monitor.waitForAbort(90):
