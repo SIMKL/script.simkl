@@ -38,6 +38,7 @@ if __name__ == "__main__":
     xbmc.log("Simkl | Python Version: " + str(sys.version))
     xbmc.log("Simkl | "+ str(sys.argv), level=xbmc.LOGDEBUG)
     xbmc.log("Simkl | compdate: {0}".format(__compdate__))
+    monitor = xbmc.Monitor()
 
     player  = engine.Player()
     player.addon = __addon__
@@ -51,9 +52,6 @@ if __name__ == "__main__":
         #interface.notify(getstr(32026))
     else:
         interface.notify(getstr(32025).format(API.api.USERSETTINGS["user"]["name"]))
-
-    #Only for testing purposes:
-    eng.synclibrary()
 
     #__addon__.openSettings()
     while not monitor.abortRequested():
