@@ -62,16 +62,17 @@ class Engine:
             movie["media"] = "movie"
             if self.api.check_if_watched(movie):
               xbmc.log("Simkl: {0}".format(movie))
-              ret = xbmc.executeJSONRPC(json.dumps({
-                  "jsonrpc": "2.0",
-                  "method": "VideoLibrary.SetMovieDetails",
-                  "params": {
-                    "playcount": 1,
-                    #"lastplayed":"",
-                    "movieid":movie["movieid"]
-                  }
-                }))
+              xbmc.executeJSONRPC(json.dumps({
+                "jsonrpc": "2.0",
+                "method": "VideoLibrary.SetMovieDetails",
+                "params": {
+                  "playcount": 1,
+                  #"lastplayed":"",
+                  "movieid":movie["movieid"]
+                }
+              }))
               #xbmc.log(ret)
+        progress.push(10, "")
         del progress
 
       todump["method"] = "VideoLibrary.GetTVShows"

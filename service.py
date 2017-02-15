@@ -8,13 +8,14 @@ Creator: David Davó <david@ddavo.me>
 import sys, os
 import xbmcaddon
 import xbmc
+import resources
 from resources.lib import interface, engine
 from resources.lib import simklapi as API
+from resources.lib.utils import *
 
 __addon__ = xbmcaddon.Addon()
 interface.__addon__ = __addon__
 autoscrobble = __addon__.getSetting("autoscrobble")
-def getstr(strid): return __addon__.getLocalizedString(strid)
 
 try:
     compdatefile = os.path.join(__addon__.getAddonInfo("path").decode("utf-8"), "resources", "data", "compdate.txt")
@@ -28,17 +29,17 @@ class Monitor(xbmc.Monitor):
     def __init__(self, engine):
         self.engine = engine
 
-    def onScanFinished(self):
+    def onScanFinished(self, arg):
         """ When library scan finishes """
         ### Connect with config
-        self.engine.synclibrary()
+        xbmc.log("Simkl: onScanFinished {0}".format(str(arg)))
+        if bool(getSetting("synclib")): self.engine.synclibrary()
 
 if __name__ == "__main__":
     xbmc.log("Simkl dir: " + str(xbmc.translatePath("special://home")))
     xbmc.log("Simkl | Python Version: " + str(sys.version))
     xbmc.log("Simkl | "+ str(sys.argv), level=xbmc.LOGDEBUG)
     xbmc.log("Simkl | compdate: {0}".format(__compdate__))
-    monitor = xbmc.Monitor()
 
     player  = engine.Player()
     player.addon = __addon__
