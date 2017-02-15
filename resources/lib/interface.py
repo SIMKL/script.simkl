@@ -45,9 +45,9 @@ class loginDialog(xbmcgui.WindowXMLDialog):
     def threaded(self):
         """ A loop threaded function, so you can do another things meanwhile """
         xbmc.log("Simkl: threaded: {0}".format(self))
-        cnt = 0
+        cnt = 1
         while self.waiting:
-            if cnt % (self.inter+1) == 0 and cnt>1:
+            if cnt % (self.inter+1) == 0:
                 xbmc.log("Simkl: Still waiting... {0}".format(cnt))
                 if self.check_login(self.pin, self.log):
 
@@ -104,12 +104,14 @@ class loginDialog(xbmcgui.WindowXMLDialog):
             self.canceled = True
 
 class SyncProgress(xbmcgui.DialogProgressBG):
+    """ The progress dialog when syncing """
     def __init__(self, media="None", mode="None"):
         self.cnt = 0
         self.msg = "Simkl: Syncing {0} library, {1} mode".format(media, mode)
         self.create(self.msg, "Starting")
 
     def push(self, i, message=None):
+        """ Updates the percentage and description """
         self.cnt += i
         self.update(int(self.cnt), message=message)
 
