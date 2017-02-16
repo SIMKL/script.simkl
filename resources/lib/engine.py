@@ -194,7 +194,7 @@ class Player(xbmc.Player):
       item = json.loads(xbmc.executeJSONRPC(json.dumps({
         "jsonrpc": "2.0", "method": "Player.GetItem",
         "params": {
-          "properties": ["showtitle", "title", "season", "episode", "file", "tvshowid", "imdbnumber", "genre" ],
+          "properties": ["showtitle", "title", "season", "episode", "file", "tvshowid", "imdbnumber", "year" ],
           "playerid": 1},
         "id": "VideoGetItem"})))["result"]["item"]
       if item["tvshowid"] != -1:
@@ -210,9 +210,6 @@ class Player(xbmc.Player):
 
       if percentage > pctconfig:
         bubble = __addon__.getSetting("bubble")
-        xbmc.log("Simkl: Bubble == {0}".format(bubble))
-        xbmc.log("Percentage: {0}, pctconfig {1}".format(percentage, pctconfig))
-
         r = self.api.watched(item, self.getTotalTime())
 
         if bubble=="true" and r:
@@ -231,7 +228,7 @@ class Player(xbmc.Player):
           txt = item["label"]
           title = ""
           if item["type"] == "movie":
-            txt = item["title"]
+            txt = "".join([item["title"], " (", str(item["year"]), ")"])
           elif item["type"] == "episode":
             txt = item["showtitle"]
             title = "- S{:02}E{:02}".format(item["season"], item["episode"])
