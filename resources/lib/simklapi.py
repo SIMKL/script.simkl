@@ -138,21 +138,24 @@ class API:
             del exp[fname]
             return 0
 
-    def watched(self, filename, mediatype, duration, date=time.strftime('%Y-%m-%d %H:%M:%S'), cnt=0):
-        """ Filename can also be an imdb number """
-        filename = filename.replace("\\", "/")
+    def watched(self, item, duration, date=time.strftime('%Y-%m-%d %H:%M:%S'), cnt=0): #OR IDMB, member: only works with movies
+        filename = item["file"].replace("\\", "/")
         if self.is_user_logged() and not self.is_locked(filename):
             try:
                 con = httplib.HTTPSConnection("api.simkl.com")
-                mediadict = {"movie": "movies", "episode":"episodes", "show":"show"}
+                mediadict = {"movie": "movies", "episode":"shows", "show":"shows"}
 
-                if filename[:2] == "tt":
-                    toappend = {"ids":{"imdb":filename}, "watched_at":date}
-                    media = mediadict[mediatype]
+                if item["imdbnumber"] != "":
+                    if item["type"] == "movie": toappend = {"ids":{"imdb": item["imdbnumber"]}, "watched_at":date}
+                    elif item["type"] == "episode":
+                        toappend = {"ids":{"tvdb":item["imdbnumber"]}, "watched_at":date,
+                        "seasons":[{
+                            "number":item["season"],
+                            "episodes":[{"number":item["episode"]}]}]}
+                    media = mediadict[item["type"]]
                 else:
                     xbmc.log("Simkl: Filename - {0}".format(filename))
-                    values = {"file":filename}
-                    values = json.dumps(values)
+                    values = json.dumps({"file":filename})
                     xbmc.log("Simkl: Query: {0}".format(values))
                     con.request("GET", "/search/file/", body=values, headers=headers)
                     r1 = con.getresponse().read()#.decode("utf-8")
