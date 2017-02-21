@@ -16,4 +16,5 @@ def getSetting(settingid):
     ret = __addon__.getSetting(settingid)
     xbmc.log("Simkl: {0}: {1}".format(settingid, ret))
     if ret == "false": ret = False
+    elif ret == "true": ret = True
     return ret
