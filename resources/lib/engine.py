@@ -83,6 +83,7 @@ class Player(xbmc.Player):
     self.onPlayBackStopped()
   def onPlayBackStopped(self):
     ''' Gets the info needed to pass to the api '''
+    self.api.check_connection()
     try:
       item = json.loads(xbmc.executeJSONRPC(json.dumps({
         "jsonrpc": "2.0", "method": "Player.GetItem",
