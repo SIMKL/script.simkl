@@ -47,7 +47,9 @@ if __name__ == "__main__":
     monitor = Monitor(eng)
 
 
-    if not API.api.is_user_logged():
+    if API.api.internet == False:
+        interface.notify(getstr(32027))
+    elif not API.api.is_user_logged():
         API.api.login() #Add "remind me tomorrow button"
         #interface.notify(getstr(32026))
     else:
