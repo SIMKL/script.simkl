@@ -17,14 +17,13 @@ class Engine:
     player.api    = api
     self.synclibrary()
 
-  def synclibrary(self, mode="quick"):
+  def synclibrary(self, mode="full"):
     """
-      Fetches the library from Simkl to Kodi
-      Mode can be "quick" or "full"
+      Fetches the library from Simkl to Kodi, and uploads what is not on Simkl
     """
     xbmc.log("Simkl: Syncing library (Simkl to Kodi)")
 
-    mode = "full"
+    watched_on_kodi = {"movies":[],"shows":[]}
 
     if mode == "full":
       todump = {
@@ -62,19 +61,21 @@ class Engine:
               ### DOWNLOAD FROM KODI
               #Separate big list in chunks
               movie["media"] = "movie"
-              if self.api.check_if_watched(movie):
-                xbmc.log("Simkl: {0}".format(movie))
-                xbmc.executeJSONRPC(json.dumps({
-                  "jsonrpc": "2.0",
-                  "method": "VideoLibrary.SetMovieDetails",
-                  "params": {
-                    "playcount": 1,
-                    #"lastplayed":"",
-                    "movieid":movie["movieid"]
-                  }
-                }))
-                #xbmc.log(ret)
-          progress.push(10, "")
+              if getSetting("movie-pull"):
+                if self.api.check_if_watched(movie):
+                  xbmc.log("Simkl: {0}".format(movie))
+                  xbmc.executeJSONRPC(json.dumps({
+                    "jsonrpc": "2.0",
+                    "method": "VideoLibrary.SetMovieDetails",
+                    "params": {
+                      "playcount": 1,
+                      #"lastplayed":"",
+                      "movieid":movie["movieid"]
+                    }
+                  }))
+            elif getSetting("movie-push"):
+              watched_on_kodi["movies"].append({"ids":{"imdb":movie["imdbnumber"]}})
+          progress.push(100, "")
           del progress
 
       if getSetting("shows-pull"):
@@ -87,12 +88,11 @@ class Engine:
         if kodilibrary["result"]["limits"]["total"] > 0:
           progress = interface.SyncProgress("TV Shows", "full")
           each = float(100) / kodilibrary["result"]["limits"]["total"]
-          debug_cnt = 0
+          #debug_cnt = 0
           for tvshow in kodilibrary["result"]["tvshows"]:
             #if debug_cnt >= 10: break #I have a lot of TV Shows, only for testing
+            #debug_cnt += 1
             progress.push(each, tvshow["label"])
-            debug_cnt += 1
-
 
             todump["method"] = "VideoLibrary.GetSeasons"
             #todump["params"]["Library.Id"] = tvshow["tvshowid"]
@@ -145,12 +145,22 @@ class Engine:
                   except KeyError:
                     toupdate["params"]["lastplayed"] = ""
 
+                  if episode["playcount"] > int(watched[i]["result"]) and getSetting("shows-push"):
+                    watched_on_kodi["shows"].append({
+                      "ids":{"tvdb":tvshow["imdbnumber"]},
+                      "seasons":[{"number":episode["season"],
+                      "episodes":[{"watched_at": episode["lastplayed"], "number":episode["episode"]}]}]
+                      })
+
                   info = xbmc.executeJSONRPC(json.dumps(toupdate))
                   xbmc.log("Simkl: Info: {0}".format(info))
 
               del todump["params"]["tvshowid"]
               del todump["params"]["season"]
           del progress
+
+    xbmc.log(str(watched_on_kodi))
+    xbmc.log(str(self.api.watched_from_list(watched_on_kodi)))
 
     xbmc.log("Simkl: Finished syncing library")
     interface.notify("Finished syncing library")
