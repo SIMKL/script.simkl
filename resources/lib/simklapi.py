@@ -203,14 +203,11 @@ class API:
             return 0
 
     @staticmethod
-    def get_all_items(mediatype):
-        """
-            mediatype can be 'shows', 'movies' or 'anime'
-            http://docs.simkl.apiary.io/#reference/sync/last-activities/get-all-items-in-the-user's-watchlist 
-        """
+    def watched_from_list(lst):
         con = httplib.HTTPSConnection("api.simkl.com")
-        con.request("GET", "/sync/all-items/{0}?extended=full".format(mediatype), headers=headers)
-        return con.getresponse().read()
+        con.request("GET", "/sync/history", body=json.dumps(lst), headers=headers)
+        r = con.getresponse().read()
+        return min(max(json.loads(r)["added"].values()),1)
 
     @staticmethod
     def check_if_watched(item, movie=True):
