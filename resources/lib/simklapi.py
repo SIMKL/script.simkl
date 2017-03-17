@@ -2,8 +2,6 @@
 # -*- coding: UTF-8 -*-
 
 import sys, os, time
-#import urllib
-#import request
 import json
 
 import xbmc
