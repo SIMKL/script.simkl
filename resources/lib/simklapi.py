@@ -13,7 +13,7 @@ def getstr(strid): return interface.getstr(strid)
 
 REDIRECT_URI = "https://simkl.com/apps/kodi/connected"
 USERFILE     = os.path.join(xbmc.translatePath(__addon__.getAddonInfo("profile")).decode("utf-8"), "simkl_key")
-xbmc.translatePath("special://profile/simkl_key")
+#xbmc.translatePath("special://profile/simkl_key")
 
 if not os.path.exists(USERFILE):
     os.mkdir(os.path.dirname(USERFILE))

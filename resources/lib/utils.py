@@ -3,7 +3,7 @@
 """
 Utils module. Some basic functions that maybe I'll need more than once
 """
-import sys
+import sys, os
 import xbmc, xbmcaddon
 __addon__ = xbmcaddon.Addon("script.simkl")
 
@@ -18,3 +18,9 @@ def getSetting(settingid):
     if ret == "false": ret = False
     elif ret == "true": ret = True
     return ret
+
+def get_old_file(filename):
+    """ Gets filename, returns full path """
+    fullpath = os.path.join(xbmc.translatePath(__addon__.getAddonInfo("profile")).decode("utf-8"), "old_{}.json".format(filename))
+    xbmc.log("Simkl: {} -- {}".format(filename, fullpath))
+    return fullpath
