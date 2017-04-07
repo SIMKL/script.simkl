@@ -203,6 +203,13 @@ class API:
             return 0
 
     @staticmethod
+    def get_all_items():
+        """ http://docs.simkl.apiary.io/#reference/sync/get-all-items/get-all-items-in-the-user's-watchlist """
+        con = httplib.HTTPSConnection("api.simkl.com")
+        con.request("GET", "/sync/all-items/?extended=full", headers=headers)
+        return json.loads(con.getresponse().read())
+
+    @staticmethod
     def watched_from_list(lst):
         con = httplib.HTTPSConnection("api.simkl.com")
         con.request("GET", "/sync/history", body=json.dumps(lst), headers=headers)
@@ -238,6 +245,13 @@ class API:
         else:
             self.internet = False
             interface.notify(getstr(32027))
+
+    @staticmethod
+    def get_last_activity():
+        """ Method http://docs.simkl.apiary.io/#reference/sync/last-activities/get-last-activity """
+        con = httplib.HTTPSConnection("api.simkl.com")
+        con.request("GET", "/sync/activities", headers=headers)
+        return json.loads(con.getresponse().read())
 
 api = API()
 if __name__ == "__main__":

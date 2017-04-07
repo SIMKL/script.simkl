@@ -4,7 +4,9 @@
 import os
 import xbmc
 import interface
-from utils import *
+import utils
+from datetime import datetime
+from utils import getstr, getSetting
 import json
 __addon__ = interface.__addon__
 def getstr(strid): return interface.getstr(strid)
@@ -16,14 +18,75 @@ class Engine:
     player.engine = self
     player.api    = api
 
+  #Note 4 myself: Maybe you should handle movies and series completly different
+  #I mean: Two different functions, two different "databases", etc.
   def synclibrary(self, mode="full"):
-    simkl_old = get_old_file("simkl")
-    kodi_old = get_old_file("kodi")
-    kodi_current = {"movies": self.get_movies(), "episodes": self.get_episodes()}
-    if not os.path.exists(old_kodi):
-    #if True:
-      with open(kodi_old, "w+") as f:
-        f.write(json.dumps(kodi_current, indent=2))
+    simkl_old_f = utils.get_old_file("simkl")
+    kodi_old_f = utils.get_old_file("kodi")
+    kodi_current = {
+    "movies": self.get_movies(), "episodes": self.get_episodes(), 
+    "lastcheck": datetime.today().strftime(utils.SIMKL_TIME_FORMAT)}
+    #Don't update if library hasn't changed
+    simkl_current = self.api.get_all_items()
+
+    def open_file(filename, current):
+      if not os.path.exists(filename):
+      #if True:
+        with open(filename, "w") as f:
+          f.write(json.dumps(current, indent=2))
+        return current
+      else:
+        with open(filename, "r") as f:
+          old = json.loads(f.read())
+        with open(filename, "w") as f:
+          f.write(json.dumps(current, indent=2))
+        return old
+
+    kodi_old = open_file(kodi_old_f, kodi_current)
+    simkl_old = open_file(simkl_old_f, simkl_current)
+
+    self.syncmovies(simkl_old["movies"], simkl_current["movies"], kodi_old["movies"], kodi_current["movies"], kodi_old["lastcheck"])
+
+    # simkl_removed = self.diff(utils.simkl2kodi(simkl_current),utils.simkl2kodi(simkl_old))
+    # simkl_added = self.diff(utils.simkl2kodi(simkl_old), utils.simkl2kodi(simkl_current))
+    # kodi_removed = self.diff(kodi_current, kodi_old)
+    # kodi_added = self.diff(kodi_old, kodi_current)
+    # diff_kodi_simkl = self.diff(kodi_current, utils.simkl2kodi(simkl_current))
+    # diff_simkl_kodi = self.diff(utils.simkl2kodi(simkl_current), kodi_current)
+
+  def syncmovies(self, simkl_old, simkl_current, kodi_old, kodi_current, kodi_lastcheck):
+    simkl_lastcheck = utils.simkl_time_to_kodi(self.api.get_last_activity()["movies"]["completed"])
+    xbmc.log("Simkl: Lastcheck movies %s" % simkl_lastcheck)
+
+    simkl_added = self.diff(utils.simkl2kodi(simkl_old), utils.simkl2kodi(simkl_current))
+    simkl_removed = self.diff(utils.simkl2kodi(simkl_current), utils.simkl2kodi(simkl_old))
+    # U iterate through this, not through the WHOLE library
+    in_both = self.intersect(kodi_current, utils.simkl2kodi(simkl_current))
+    for movie in in_both:
+      xbmc.log("Movie: %s" % movie)
+
+    for movie in simkl_added:
+      xbmc.log("Added %s" % movie)
+    for movie in simkl_removed:
+      xbmc.log("Removed %s" % movie)
+
+  @staticmethod
+  def diff(A, B):
+    """ 
+      Returns the difference between A and B. About data return: B > A
+    """
+    A_movies = set([x["imdbnumber"] for x in A])
+    B_movies = set([x["imdbnumber"] for x in B])
+    diff = list(B_movies - A_movies)
+    return [movie_B for movie_B in B if movie_B["imdbnumber"] in diff]
+
+  @staticmethod
+  def intersect(A, B):
+    """ Returns the intersection between A and B. About data return: B > A """
+    A_movies = set([x["imdbnumber"] for x in A])
+    B_movies = set([x["imdbnumber"] for x in B])
+    inter = A_movies & B_movies
+    return [movie_B for movie_B in B if movie_B["imdbnumber"] in inter]
 
   @staticmethod
   def get_movies():
