@@ -7,6 +7,7 @@ import json
 import xbmc
 import interface
 import httplib
+import utils
 
 __addon__ = interface.__addon__
 def getstr(strid): return interface.getstr(strid)
@@ -252,6 +253,27 @@ class API:
         con = httplib.HTTPSConnection("api.simkl.com")
         con.request("GET", "/sync/activities", headers=headers)
         return json.loads(con.getresponse().read())
+
+    @staticmethod
+    def update_movies(movies):
+        con = httplib.HTTPSConnection("api.simkl.com")
+        movies_values = []
+        for movie in movies:
+            xbmc.log("Updating to simkl: %s" % movie)
+            tmpdict = {}
+            tmpdict["ids"] = {"imdb": movie["imdbnumber"]}
+            if movie["playcount"] == 0: tmpdict["status"] = "plantowatch"
+            else: 
+                tmpdict["status"] = "completed"
+                tmpdict["watched_at"] = utils.kodi_time_to_simkl(movie["lastplayed"])
+            movies_values.append(tmpdict)
+
+        values = json.dumps({"movies":movies_values})
+
+        xbmc.log("Values %s" % values)
+        con.request("GET", "/sync/history/", body=values, headers=headers)
+        r = con.getresponse().read()
+        xbmc.log("Respones: %s" % r)
 
 api = API()
 if __name__ == "__main__":
