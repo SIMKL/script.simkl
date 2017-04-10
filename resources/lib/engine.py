@@ -6,7 +6,7 @@ import xbmc
 import interface
 import utils
 from datetime import datetime
-from utils import getstr, getSetting
+from utils import getstr
 import json
 __addon__ = interface.__addon__
 def getstr(strid): return interface.getstr(strid)
@@ -24,7 +24,7 @@ class Engine:
     simkl_old_f = utils.get_old_file("simkl")
     kodi_old_f = utils.get_old_file("kodi")
     kodi_current = {
-      "movies": self.get_movies(), "episodes": self.get_episodes(), 
+      "movies": self.get_movies(), "episodes": self.get_episodes(),
       "lastcheck": datetime.today().strftime(utils.SIMKL_TIME_FORMAT)}
     simkl_current = self.api.get_all_items()
     # with open("/home/davo/.kodi/userdata/addon_data/script.simkl/current_simkl.json", "r") as f:
@@ -32,8 +32,8 @@ class Engine:
     # with open("/home/davo/.kodi/userdata/addon_data/script.simkl/old_simkl.json", "r") as f:
     #   simkl_old = json.loads(f.read())
 
-
     def open_file(filename, current):
+      """ Reads and overwrites files """
       if not os.path.exists(filename):
       #if True:
         with open(filename, "w") as f:
@@ -49,9 +49,17 @@ class Engine:
     kodi_old = open_file(kodi_old_f, kodi_current)
     simkl_old = open_file(simkl_old_f, simkl_current)
 
-    self.syncmovies(simkl_old["movies"], simkl_current["movies"], kodi_old["movies"], kodi_current["movies"], kodi_old["lastcheck"])
+    simkl_lastcheck = utils.simkl_time_to_kodi(self.api.get_last_activity()["movies"]["all"])
+    self.syncmovies(simkl_old["movies"], simkl_current["movies"], kodi_old["movies"], \
+     kodi_current["movies"], kodi_old["lastcheck"], simkl_lastcheck)
 
-  def syncmovies(self, simkl_old, simkl_current, kodi_old, kodi_current, kodi_lastcheck):
+    lstchk_anime = self.api.get_last_activity()["anime"]["all"]
+    lstchk_tv_shows = self.api.get_last_activity()["tv_shows"]["all"]
+    simkl_lastcheck = max(lstchk_anime, lstchk_tv_shows)
+
+  def syncmovies(self, simkl_old, simkl_current, kodi_old, kodi_current, \
+    kodi_lastcheck, simkl_lastcheck):
+    """ Syncs movies with simkl """
     simkl_lastcheck = utils.simkl_time_to_kodi(self.api.get_last_activity()["movies"]["completed"])
     xbmc.log("Simkl: Lastcheck movies %s" % simkl_lastcheck)
 
@@ -61,7 +69,7 @@ class Engine:
     kodi_removed = self.diff(kodi_current, kodi_old)
     # U iterate through this, not through the WHOLE library
     #in_both = self.intersect(kodi_current, utils.simkl2kodi(simkl_current))
-    
+
     for movie in simkl_added[0]:
       if movie["imdbnumber"] not in kodi_removed[1]:
         pass
@@ -77,33 +85,39 @@ class Engine:
         xbmc.log("Added %s" % movie)
         movie["playcount"] = 1
         self.update_movie(movie)
-      elif movie["imdbnumber"] in simkl_added[1] and movie["imdbnumber"] in kodi_removed[1]:
-        xbmc.log("Conflicting %s" % movie)
-
-      if movie["imdbnumber"] in simkl_removed[1] and movie["imdbnumber"] not in kodi_added[1]:
+      elif movie["imdbnumber"] in simkl_removed[1] and movie["imdbnumber"] not in kodi_added[1]:
         xbmc.log("Removed %s" % movie)
         movie["playcount"] = 0
         self.update_movie(movie)
-      elif movie["imdbnumber"] in simkl_removed and movie["imdbnumber"] in kodi_added[1]:
-        xbmc.log("Conflicting %s" % movie)
-
-      if movie["imdbnumber"] in kodi_added[1] and movie["imdbnumber"] not in simkl_removed[1]:
+      elif movie["imdbnumber"] in kodi_added[1] and movie["imdbnumber"] not in simkl_removed[1]:
         movie["playcount"] = 1
         movies_to_simkl.append(movie)
-      elif movie["imdbnumber"] in kodi_added[1] and movie["imdbnumber"] in simkl_removed[1]:
-        xbmc.log("Conflicting %s" % movie)
-
-      if movie["imdbnumber"] in kodi_removed[1] and movie["imdbnumber"] not in simkl_added[1]:
+      elif movie["imdbnumber"] in kodi_removed[1] and movie["imdbnumber"] not in simkl_added[1]:
         movie["playcount"] = 0
         movies_to_simkl.append(movie)
-      elif movie["imdbnumber"] in kodi_removed[1] and movie["imdbnumber"] in simkl_added[1]:
+      
+      elif movie["imdbnumber"] in simkl_added[1] and movie["imdbnumber"] in kodi_removed[1]:
         xbmc.log("Conflicting %s" % movie)
+        if simkl_lastcheck >= kodi_lastcheck: 
+          movie["playcount"] = 1
+        else: 
+          movie["playcount"] = 0
+        movies_to_simkl.append(movie)
+        self.update_movie(movie)
+      elif movie["imdbnumber"] in kodi_added[1] and movie["imdbnumber"] in simkl_removed[1]:
+        xbmc.log("Conflicting %s" % movie)
+        if simkl_lastcheck >= kodi_lastcheck: 
+          movie["playcount"] = 0
+        else: 
+          movie["playcount"] = 1
+        movies_to_simkl.append(movie)
+        self.update_movie(movie)
 
     self.api.update_movies(movies_to_simkl)
 
   @staticmethod
   def diff(A, B):
-    """ 
+    """
       Returns the difference between A and B. About data return: B > A
     """
     A_movies = set([x["imdbnumber"] for x in A])

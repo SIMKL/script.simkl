@@ -30,11 +30,14 @@ def get_old_file(filename):
     return fullpath
 
 def simkl_time_to_kodi(string):
+    """ gets simkl time and returns kodi time """
     return datetime.strptime(string, SIMKL_TIME_FORMAT).strftime(KODI_TIME_FORMAT)
 def kodi_time_to_simkl(string):
+    """ gets kodi time and returns simkl time """
     return datetime.strptime(string, KODI_TIME_FORMAT).strftime(SIMKL_TIME_FORMAT)
 
 def simkl2kodi(objects):
+    """ Simkl dictionary format to kodi library format """
     watched_movies_list = []
     for movie in objects:
         if movie["status"] == "completed":
@@ -49,6 +52,13 @@ def simkl2kodi(objects):
     return watched_movies_list
 
 def find_match(item, database):
+    """ returns match from database """
     for item_database in database:
         if item["imdbnumber"] == item_database["imdbnumber"]: return item_database
     return None
+
+def compare_max(tuple1, tuple2):
+    if tuple1[1] >= tuple2[1]:
+        return tuple1[0]
+    else:
+        return tuple2[0]

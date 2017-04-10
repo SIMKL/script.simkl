@@ -262,7 +262,7 @@ class API:
             xbmc.log("Updating to simkl: %s" % movie)
             tmpdict = {}
             tmpdict["ids"] = {"imdb": movie["imdbnumber"]}
-            if movie["playcount"] == 0: tmpdict["status"] = "plantowatch"
+            if movie["playcount"] == 0: tmpdict["status"] = "plantowatch" # NO METHOD YET. WAITING.
             else: 
                 tmpdict["status"] = "completed"
                 tmpdict["watched_at"] = utils.kodi_time_to_simkl(movie["lastplayed"])
