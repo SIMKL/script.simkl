@@ -25,7 +25,8 @@ def getSetting(settingid):
 
 def get_old_file(filename):
     """ Gets filename, returns full path """
-    fullpath = os.path.join(xbmc.translatePath(__addon__.getAddonInfo("profile")).decode("utf-8"), "old_{}.json".format(filename))
+    fullpath = os.path.join(xbmc.translatePath(__addon__.getAddonInfo("profile")).decode("utf-8"),\
+        "old_{}.json".format(filename))
     xbmc.log("Simkl: {} -- {}".format(filename, fullpath))
     return fullpath
 
@@ -42,11 +43,11 @@ def simkl2kodi(objects):
     for movie in objects:
         if movie["status"] == "completed":
             watched_movies_list.append({
-            "year": movie["movie"]["year"],
-            "imdbnumber": movie["movie"]["ids"]["imdb"],
-            "label": movie["movie"]["title"],
-            "playcount": 1,
-            "lastplayed": simkl_time_to_kodi(movie["last_watched_at"]),
+                "year": movie["movie"]["year"],
+                "imdbnumber": movie["movie"]["ids"]["imdb"],
+                "label": movie["movie"]["title"],
+                "playcount": 1,
+                "lastplayed": simkl_time_to_kodi(movie["last_watched_at"]),
             })
 
     return watched_movies_list
@@ -58,7 +59,7 @@ def find_match(item, database):
     return None
 
 def compare_max(tuple1, tuple2):
+    """ Pretty simple, no comments """
     if tuple1[1] >= tuple2[1]:
         return tuple1[0]
-    else:
-        return tuple2[0]
+    return tuple2[0]

@@ -78,7 +78,7 @@ class loginDialog(xbmcgui.WindowXMLDialog):
 
         if API.is_user_logged(): #If user is alredy logged in
             dialog = xbmcgui.Dialog()
-            username = API.USERSETTINGS["user"]["name"]
+            username = API.usersettings["user"]["name"]
             ret = dialog.yesno("Simkl LogIn Warning", getstr(32032).format(username),
                 nolabel=getstr(32034), yeslabel=getstr(32033), autoclose=30000)
             #xbmc.log("Ret: {0}".format(ret))
@@ -102,6 +102,17 @@ class loginDialog(xbmcgui.WindowXMLDialog):
         xbmc.log("Simkl: onclick {0}, {1}".format(controlID, self))
         if controlID == CANCEL_BUTTON:
             self.canceled = True
+
+class SyncDialog(xbmcgui.WindowXMLDialog):
+    """ The Dialog popped the first time you try to sync your files """
+    def __init__(self, xmlFilename, scriptPath):
+        pass
+
+    def onInit(self):
+        """ The function that is loaded on window init """
+        #dialog = xbmcgui.Dialog()
+        pass
+        
 
 class SyncProgress(xbmcgui.DialogProgressBG):
     """ The progress dialog when syncing """

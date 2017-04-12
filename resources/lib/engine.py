@@ -9,7 +9,6 @@ from datetime import datetime
 from utils import getstr
 import json
 __addon__ = interface.__addon__
-def getstr(strid): return interface.getstr(strid)
 
 class Engine:
   def __init__(self, api, player):
@@ -95,20 +94,20 @@ class Engine:
       elif movie["imdbnumber"] in kodi_removed[1] and movie["imdbnumber"] not in simkl_added[1]:
         movie["playcount"] = 0
         movies_to_simkl.append(movie)
-      
+
       elif movie["imdbnumber"] in simkl_added[1] and movie["imdbnumber"] in kodi_removed[1]:
         xbmc.log("Conflicting %s" % movie)
-        if simkl_lastcheck >= kodi_lastcheck: 
+        if simkl_lastcheck >= kodi_lastcheck:
           movie["playcount"] = 1
-        else: 
+        else:
           movie["playcount"] = 0
         movies_to_simkl.append(movie)
         self.update_movie(movie)
       elif movie["imdbnumber"] in kodi_added[1] and movie["imdbnumber"] in simkl_removed[1]:
         xbmc.log("Conflicting %s" % movie)
-        if simkl_lastcheck >= kodi_lastcheck: 
+        if simkl_lastcheck >= kodi_lastcheck:
           movie["playcount"] = 0
-        else: 
+        else:
           movie["playcount"] = 1
         movies_to_simkl.append(movie)
         self.update_movie(movie)
@@ -151,7 +150,7 @@ class Engine:
     A_movies = set([x["imdbnumber"] for x in A])
     B_movies = set([x["imdbnumber"] for x in B])
     union = A_movies | B_movies
-    return [movie_B for movie_B in B if movie_B["imdbnumber"] in inter], union
+    return [movie_B for movie_B in B if movie_B["imdbnumber"] in union], union
 
   @staticmethod
   def get_movies(playcount=1):
@@ -305,7 +304,6 @@ class Player(xbmc.Player):
               item["episode"] = lstw["episode"]["episode"]
             elif lstw["type"] == "movie":
               item["title"] = "".join([lstw["movie"]["title"], " (", str(lstw["movie"]["year"]), ")"])
-            media = lstw["type"]
 
           txt = item["label"]
           title = ""

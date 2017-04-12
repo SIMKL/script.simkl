@@ -1,5 +1,9 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+"""
+The module that connects with simkl api
+http://docs.simkl.apiary.io/
+"""
 
 import sys, os, time
 import json
@@ -57,8 +61,8 @@ class API:
     def get_usersettings(self):
         self.con = httplib.HTTPSConnection("api.simkl.com")
         self.con.request("GET", "/users/settings", headers=headers)
-        self.USERSETTINGS = json.loads(self.con.getresponse().read().decode("utf-8"))
-        xbmc.log("Simkl: Usersettings: " + str(self.USERSETTINGS))
+        self.usersettings = json.loads(self.con.getresponse().read().decode("utf-8"))
+        xbmc.log("Simkl: Usersettings: " + str(self.usersettings))
 
     def login(self):
         """ Logins the API class to Simkl """
@@ -102,7 +106,7 @@ class API:
             self.set_atoken(r["access_token"])
             log.request("GET", "/users/settings", headers=headers)
             r = json.loads(log.getresponse().read().decode("utf-8"))
-            self.USERSETTINGS = r
+            self.usersettings = r
             return True
         elif r["result"] == "KO":
             return False
@@ -111,13 +115,13 @@ class API:
         """ Checks if user is logged in """
         failed = False
         if self.internet == False: return False
-        if "error" in self.USERSETTINGS.keys(): failed = self.USERSETTINGS["error"]
+        if "error" in self.usersettings.keys(): failed = self.usersettings["error"]
         if self.token == "" or failed == "user_token_failed":
             xbmc.log("Simkl: User not logged in")
             interface.login(0)
             return False
         else:
-            #interface.login(self.USERSETTINGS["user"]["name"])
+            #interface.login(self.usersettings["user"]["name"])
             interface.login(1)
             return True
 
@@ -143,7 +147,8 @@ class API:
             del exp[fname]
             return 0
 
-    def watched(self, item, duration, date=time.strftime('%Y-%m-%d %H:%M:%S'), cnt=0): #OR IDMB, member: only works with movies
+    def watched(self, item, duration, date=time.strftime('%Y-%m-%d %H:%M:%S'), cnt=0):
+        """ Sets a 'item' as watched on simkl """
         filename = item["file"].replace("\\", "/")
         if self.is_user_logged() and not self.is_locked(filename):
             try:
@@ -263,7 +268,7 @@ class API:
             tmpdict = {}
             tmpdict["ids"] = {"imdb": movie["imdbnumber"]}
             if movie["playcount"] == 0: tmpdict["status"] = "plantowatch" # NO METHOD YET. WAITING.
-            else: 
+            else:
                 tmpdict["status"] = "completed"
                 tmpdict["watched_at"] = utils.kodi_time_to_simkl(movie["lastplayed"])
             movies_values.append(tmpdict)
