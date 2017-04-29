@@ -9,6 +9,7 @@ import json
 import xbmc
 import interface
 import httplib
+from socket import gaierror
 
 __addon__ = interface.__addon__
 def getstr(strid): return interface.getstr(strid)
@@ -50,7 +51,7 @@ class API:
             self.internet = True
             #if not os.path.exists(USERFILE):
             #    api.login()
-        except Exception:
+        except gaierror:
             xbmc.log("Simkl: {0}".format("No INTERNET"))
             #interface.notify(getstr(32027))
             self.internet = False
@@ -58,7 +59,9 @@ class API:
     def get_usersettings(self):
         self.con = httplib.HTTPSConnection("api.simkl.com")
         self.con.request("GET", "/users/settings", headers=headers)
-        self.USERSETTINGS = json.loads(self.con.getresponse().read().decode("utf-8"))
+        r = self.con.getresponse().read().decode("utf-8")
+        xbmc.log("Simkl: get_usersettings: %s" %r)
+        self.USERSETTINGS = json.loads(r)
         xbmc.log("Simkl: Usersettings: " + str(self.USERSETTINGS))
 
     def login(self):
