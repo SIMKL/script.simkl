@@ -13,9 +13,9 @@ import interface
 import httplib
 from socket import gaierror
 import utils
+from utils import getstr
 
 __addon__ = interface.__addon__
-def getstr(strid): return interface.getstr(strid)
 
 REDIRECT_URI = "https://simkl.com/apps/kodi/connected"
 USERFILE     = os.path.join(xbmc.translatePath(__addon__.getAddonInfo("profile")).decode("utf-8"), "simkl_key")
@@ -43,6 +43,7 @@ headers = {"Content-Type": "application-json",
     "simkl-api-key": APIKEY}
 
 class API:
+    """ Class for handling http://api.simkl.com """
     def __init__(self):
         self.scrobbled_dict = {} #So it doesn't scrobble 5 times the same chapter
         #{"Label":expiration_time}
@@ -60,6 +61,7 @@ class API:
             self.internet = False
 
     def get_usersettings(self):
+        """ Retrieves user settings """
         self.con = httplib.HTTPSConnection("api.simkl.com")
         self.con.request("GET", "/users/settings", headers=headers)
         self.usersettings = json.loads(self.con.getresponse().read().decode("utf-8"))
@@ -91,6 +93,7 @@ class API:
         del self.logindialog
 
     def set_atoken(self, token):
+        """ Sets the token for the api """
         global ATOKEN
         with open(USERFILE, "w") as f:
             f.write(token)
@@ -99,6 +102,7 @@ class API:
         self.token = token
 
     def check_login(self, ucode, log): #Log is the connection
+        """ Cecks how the login is going """
         url = "/oauth/pin/" + ucode + "?client_id=" + APIKEY
         log.request("GET", url, headers=headers)
         r = json.loads(log.getresponse().read().decode("utf-8"))
@@ -128,6 +132,7 @@ class API:
 
     ### SCROBBLING OR CHECKIN
     def lock(self, fname, duration):
+        """ Locks a file """
         xbmc.log("Duration: %s" %duration)
         exp = self.scrobbled_dict
         exp[fname] = int(time.time() + (105 - float(__addon__.getSetting("scr-pct"))) / 100 * duration)
@@ -135,6 +140,7 @@ class API:
         self.scrobbled_dict = {fname:exp[fname]} #So there is always only one entry on the dict
 
     def is_locked(self, fname):
+        """ Checks if the file is 'locked' """
         exp = self.scrobbled_dict
         if not (fname in exp.keys()): return 0
         xbmc.log("Time: {0}, exp: {1}, Dif: {2}".format(int(time.time()),
@@ -218,6 +224,7 @@ class API:
 
     @staticmethod
     def watched_from_list(lst):
+        """ Given a list, it marks them as watched """
         con = httplib.HTTPSConnection("api.simkl.com")
         con.request("GET", "/sync/history", body=json.dumps(lst), headers=headers)
         r = con.getresponse().read()
@@ -229,7 +236,7 @@ class API:
         con = httplib.HTTPSConnection("api.simkl.com")
         if movie:
             values = json.dumps([{
-                "type": item["media"],
+                "type": "movie",
                 "imdb": item["imdbnumber"]
                 }])
             con.request("GET", "/sync/watched", body=values, headers=headers)
@@ -242,11 +249,12 @@ class API:
             return json.loads(con.getresponse().read())
 
     def check_connection(self, cnt=0):
+        """ Checks if there is a connection to the internet """
         if cnt < 3:
             try:
                 self.get_usersettings()
                 self.internet = True
-            except Exception:
+            except gaierror:
                 time.sleep(5)
                 self.check_connection(cnt=cnt+1)
         else:
@@ -262,22 +270,24 @@ class API:
 
     @staticmethod
     def update_movies(movies):
+        """ http://docs.simkl.apiary.io/#reference/sync/get-all-items/add-items-to-specific-list """
         con = httplib.HTTPSConnection("api.simkl.com")
         movies_values = []
         for movie in movies:
             xbmc.log("Updating to simkl: %s" % movie)
             tmpdict = {}
             tmpdict["ids"] = {"imdb": movie["imdbnumber"]}
-            if movie["playcount"] == 0: tmpdict["status"] = "plantowatch" # NO METHOD YET. WAITING.
+            if movie["playcount"] == 0:
+                tmpdict["to"] = "plantowatch"
             else:
-                tmpdict["status"] = "completed"
+                tmpdict["to"] = "completed"
                 tmpdict["watched_at"] = utils.kodi_time_to_simkl(movie["lastplayed"])
             movies_values.append(tmpdict)
 
         values = json.dumps({"movies":movies_values})
 
         xbmc.log("Values %s" % values)
-        con.request("GET", "/sync/history/", body=values, headers=headers)
+        con.request("GET", "/sync/add-to-list/", body=values, headers=headers)
         r = con.getresponse().read()
         xbmc.log("Respones: %s" % r)
 

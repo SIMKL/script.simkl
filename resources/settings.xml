@@ -17,15 +17,11 @@
     <setting label="32008" type="bool" id="bubble" default="true" enable="true"/>
   </category>
   <category label="Syncing">
-    <setting label="Sync now" type="action" action="UpdateLibrary(video)"/>
+    <setting label="Force syncing" type="action" action="UpdateLibrary(video)"/>
     <setting label="32003" type="bool" id="synclib" default="false"/>
     <setting label="Movies" type="lsep" visible="eq(-1,true)"/>
-    <setting label="Pull movies" id="movie-pull" type="bool" default="true" visible="eq(-2,true)"/>
-    <setting label="Push movies" id="movie-push" type="bool" default="true" enable="true" visible="eq(-3,true)"/>
-    <setting label="Pull mode" id="movie-mode" type="labelenum" values="complete" visible="eq(-4,true)"/>
-    <setting label="TV Shows" type="lsep" visible="eq(-5,true)"/>
-    <setting label="Pull TV Shows" id="shows-pull" type="bool" default="true" visible="eq(-6,true)"/>
-    <setting label="Push TV Shows" id="shows-push" type="bool" default="false" enable="false" visible="eq(-7,true)"/>
-    <setting label="Pull mode" id="shows-mode" type="labelenum" values="complete" visible="eq(-8,true)"/>
+    <setting label="Sync movies" id="movie-sync" type="bool" default="true" visible="eq(-2,true)"/>
+    <setting label="TV Shows" type="lsep" visible="eq(-3,true)"/>
+    <setting label="Sync TV Shows" id="shows-pull" type="bool" default="true" visible="eq(-4,true)" enable="false"/>
   </category>
 </settings>

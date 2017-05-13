@@ -27,7 +27,7 @@ def get_old_file(filename):
     """ Gets filename, returns full path """
     fullpath = os.path.join(xbmc.translatePath(__addon__.getAddonInfo("profile")).decode("utf-8"),\
         "old_{}.json".format(filename))
-    xbmc.log("Simkl: {} -- {}".format(filename, fullpath))
+    xbmc.log("Simkl: %s -- %s" % (filename, fullpath))
     return fullpath
 
 def simkl_time_to_kodi(string):

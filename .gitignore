@@ -92,3 +92,5 @@ ENV/
 .ropeprojectKodi.rar
 
 .bak
+*.sublime-project
+*.sublime-workspace

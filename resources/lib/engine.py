@@ -11,6 +11,7 @@ import json
 __addon__ = interface.__addon__
 
 class Engine:
+  """ Like an offline api class """
   def __init__(self, api, player):
     self.api = api
     self.player = player
@@ -20,10 +21,13 @@ class Engine:
   #Note 4 myself: Maybe you should handle movies and series completly different
   #I mean: Two different functions, two different "databases", etc.
   def synclibrary(self, mode="full"):
+    """ Syncs simkl with kodi """
     simkl_old_f = utils.get_old_file("simkl")
     kodi_old_f = utils.get_old_file("kodi")
     kodi_current = {
-      "movies": self.get_movies(), "episodes": self.get_episodes(),
+      "movies": self.get_movies("1+"),
+      "movies_0": self.get_movies("0"),
+      #"episodes": self.get_episodes(),
       "lastcheck": datetime.today().strftime(utils.SIMKL_TIME_FORMAT)}
     simkl_current = self.api.get_all_items()
     # with open("/home/davo/.kodi/userdata/addon_data/script.simkl/current_simkl.json", "r") as f:
@@ -37,7 +41,9 @@ class Engine:
       #if True:
         with open(filename, "w") as f:
           f.write(json.dumps(current, indent=2))
-        return current
+        old = current.copy()
+        old["movies_0"] = {}
+        return old
       else:
         with open(filename, "r") as f:
           old = json.loads(f.read())
@@ -49,53 +55,50 @@ class Engine:
     simkl_old = open_file(simkl_old_f, simkl_current)
 
     simkl_lastcheck = utils.simkl_time_to_kodi(self.api.get_last_activity()["movies"]["all"])
-    self.syncmovies(simkl_old["movies"], simkl_current["movies"], kodi_old["movies"], \
-     kodi_current["movies"], kodi_old["lastcheck"], simkl_lastcheck)
+    if utils.getSetting("synclib"):
+      if utils.getSetting("movie-sync"):
+        self.syncmovies(simkl_old["movies"], simkl_current["movies"], kodi_old["movies"], \
+         kodi_current["movies"], kodi_current["movies_0"], kodi_old["movies_0"], kodi_old["lastcheck"], simkl_lastcheck)
 
     lstchk_anime = self.api.get_last_activity()["anime"]["all"]
     lstchk_tv_shows = self.api.get_last_activity()["tv_shows"]["all"]
     simkl_lastcheck = max(lstchk_anime, lstchk_tv_shows)
 
   def syncmovies(self, simkl_old, simkl_current, kodi_old, kodi_current, \
-    kodi_lastcheck, simkl_lastcheck):
+    kodi_current_0, kodi_old_0, kodi_lastcheck, simkl_lastcheck):
     """ Syncs movies with simkl """
     simkl_lastcheck = utils.simkl_time_to_kodi(self.api.get_last_activity()["movies"]["completed"])
     xbmc.log("Simkl: Lastcheck movies %s" % simkl_lastcheck)
 
     simkl_added = self.diff(utils.simkl2kodi(simkl_old), utils.simkl2kodi(simkl_current))
     simkl_removed = self.diff(utils.simkl2kodi(simkl_current), utils.simkl2kodi(simkl_old))
-    kodi_added = self.diff(kodi_old, kodi_current)
-    kodi_removed = self.diff(kodi_current, kodi_old)
-    # U iterate through this, not through the WHOLE library
-    #in_both = self.intersect(kodi_current, utils.simkl2kodi(simkl_current))
+    kodi_watched = self.diff(kodi_old, kodi_current)
+    kodi_unwatched = self.diff(kodi_current, kodi_old)
+    kodi_added = self.diff(kodi_old_0, kodi_current_0)
+    #We can ignore items removed from library
 
-    for movie in simkl_added[0]:
-      if movie["imdbnumber"] not in kodi_removed[1]:
-        pass
-    for movie in simkl_removed[0]:
-      if movie["imdbnumber"] not in kodi_added[1]:
-        pass
-
-    xbmc.log("Kodi_removed %s, %s" % kodi_removed)
+    xbmc.log("kodi_unwatched %s, %s" % kodi_unwatched)
+    xbmc.log("kodi_added %s, %s" % kodi_added)
     movies_to_simkl = []
-    for movie in self.get_movies(0):
+
+    for movie in self.get_movies("0+"):
       #xbmc.log("Movie: %s" % movie)
-      if movie["imdbnumber"] in simkl_added[1] and movie["imdbnumber"] not in kodi_removed[1]:
+      if movie["imdbnumber"] in simkl_added[1] and movie["imdbnumber"] not in kodi_unwatched[1]:
         xbmc.log("Added %s" % movie)
         movie["playcount"] = 1
         self.update_movie(movie)
-      elif movie["imdbnumber"] in simkl_removed[1] and movie["imdbnumber"] not in kodi_added[1]:
+      elif movie["imdbnumber"] in simkl_removed[1] and movie["imdbnumber"] not in kodi_watched[1]:
         xbmc.log("Removed %s" % movie)
         movie["playcount"] = 0
         self.update_movie(movie)
-      elif movie["imdbnumber"] in kodi_added[1] and movie["imdbnumber"] not in simkl_removed[1]:
+      elif movie["imdbnumber"] in kodi_watched[1] and movie["imdbnumber"] not in simkl_removed[1]:
         movie["playcount"] = 1
         movies_to_simkl.append(movie)
-      elif movie["imdbnumber"] in kodi_removed[1] and movie["imdbnumber"] not in simkl_added[1]:
+      elif movie["imdbnumber"] in kodi_unwatched[1] and movie["imdbnumber"] not in simkl_added[1]:
         movie["playcount"] = 0
         movies_to_simkl.append(movie)
 
-      elif movie["imdbnumber"] in simkl_added[1] and movie["imdbnumber"] in kodi_removed[1]:
+      elif movie["imdbnumber"] in simkl_added[1] and movie["imdbnumber"] in kodi_unwatched[1]:
         xbmc.log("Conflicting %s" % movie)
         if simkl_lastcheck >= kodi_lastcheck:
           movie["playcount"] = 1
@@ -103,7 +106,7 @@ class Engine:
           movie["playcount"] = 0
         movies_to_simkl.append(movie)
         self.update_movie(movie)
-      elif movie["imdbnumber"] in kodi_added[1] and movie["imdbnumber"] in simkl_removed[1]:
+      elif movie["imdbnumber"] in kodi_watched[1] and movie["imdbnumber"] in simkl_removed[1]:
         xbmc.log("Conflicting %s" % movie)
         if simkl_lastcheck >= kodi_lastcheck:
           movie["playcount"] = 0
@@ -111,8 +114,18 @@ class Engine:
           movie["playcount"] = 1
         movies_to_simkl.append(movie)
         self.update_movie(movie)
+      elif movie["imdbnumber"] in kodi_added[1]:
+        self.watch_if_kodi(movie)
 
-    self.api.update_movies(movies_to_simkl)
+    if len(movies_to_simkl) > 0: self.api.update_movies(movies_to_simkl)
+
+  def watch_if_kodi(self, movie):
+    """ Marks a movie as watched if is watched in kodi """
+    c = self.api.check_if_watched(movie)
+    xbmc.log("Movie, c: %s, %s" % (movie, c))
+    if c:
+      movie["playcount"] = 1
+      self.update_movie(movie)
 
   @staticmethod
   def diff(A, B):
@@ -153,7 +166,7 @@ class Engine:
     return [movie_B for movie_B in B if movie_B["imdbnumber"] in union], union
 
   @staticmethod
-  def get_movies(playcount=1):
+  def get_movies(playcount="1+"):
     movies_list = []
     movies = json.loads(xbmc.executeJSONRPC(json.dumps({
           "jsonrpc": "2.0",
@@ -179,7 +192,7 @@ class Engine:
           "id": "libMovies"
       })))["result"]["movies"]
     for movie in movies:
-      if movie["playcount"] >= playcount:
+      if str(movie["playcount"]) in playcount or (movie["playcount"]>playcount and "+" in playcount):
         movies_list.append(movie)
     return movies_list
 
