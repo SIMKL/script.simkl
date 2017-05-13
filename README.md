@@ -1,5 +1,5 @@
 # Simkl scrobbler (for Kodi)
-[![](https://img.shields.io/badge/licence-%20GPLv3-brightgreen.svg)][license] [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/SIMKL/script.simkl/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/SIMKL/script.simkl/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/SIMKL/script.simkl/badges/build.png?b=master)](https://scrutinizer-ci.com/g/SIMKL/script.simkl/build-status/master)
+[![](https://img.shields.io/badge/licence-%20GPLv3-brightgreen.svg)][license] [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/SIMKL/script.simkl/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/SIMKL/script.simkl/?branch=master) [![Build Status](https://scrutinizer-ci.com/g/SIMKL/script.simkl/badges/build.png?b=master)](https://scrutinizer-ci.com/g/SIMKL/script.simkl/build-status/master) [![Gitter](https://badges.gitter.im/Simkl/API.svg)](https://gitter.im/Simkl/apps-automatic-trakers?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 ## Installing from Kodi
 1. Open Kodi. Then go to System » Settings » Add-ons » Install from repository » Services » Simkl TV Tracker and click Install

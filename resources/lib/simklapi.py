@@ -11,6 +11,7 @@ import json
 import xbmc
 import interface
 import httplib
+from socket import gaierror
 import utils
 
 __addon__ = interface.__addon__
@@ -53,7 +54,7 @@ class API:
             self.internet = True
             #if not os.path.exists(USERFILE):
             #    api.login()
-        except Exception:
+        except gaierror:
             xbmc.log("Simkl: {0}".format("No INTERNET"))
             #interface.notify(getstr(32027))
             self.internet = False
