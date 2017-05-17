@@ -22,7 +22,10 @@ USERFILE     = os.path.join(xbmc.translatePath(__addon__.getAddonInfo("profile")
 #xbmc.translatePath("special://profile/simkl_key")
 
 if not os.path.exists(USERFILE):
-    os.mkdir(os.path.dirname(USERFILE))
+    try:
+        os.mkdir(os.path.dirname(USERFILE))
+    except OSError:
+        xbmc.log("Simkl: Folder alredy exists")
     with open(USERFILE, "w+") as f:
         f.write("")
 else:

@@ -51,8 +51,8 @@ class loginDialog(xbmcgui.WindowXMLDialog):
                 xbmc.log("Simkl: Still waiting... {0}".format(cnt))
                 if self.check_login(self.pin, self.log):
 
-                    xbmc.log(str(self.api.USERSETTINGS))
-                    notify(getstr(32030).format(self.api.USERSETTINGS["user"]["name"]))
+                    xbmc.log(str(self.api.usersettings))
+                    notify(getstr(32030).format(self.api.usersettings["user"]["name"]))
                     self.waiting = False
                     #Now check that the user has done what it has to be done
 
