@@ -8,19 +8,10 @@ Creator: David Davó <david@ddavo.me>
 import sys, os
 import xbmcaddon
 import xbmc
-import xbmcgui
 
-from threading import Timer
-WINDOW = xbmcgui.Window(10000)
-if WINDOW.getProperty("SimklTrackerRun") == "True":
-    xbmc.log('Simkl: already started')
-    sys.exit(0)
-WINDOW.setProperty("SimklTrackerRun", "True")
-
-def stop_singleton():
-    WINDOW.clearProperty("SimklTrackerRun")
-t = Timer(5, stop_singleton)
-t.start()
+from resources.lib import utils
+utils.systemLock("SimklTrackerRun")
+utils.systemUnlockDelay("SimklTrackerRun", 5)
 
 from resources.lib import interface, engine
 from resources.lib import simklapi as API
