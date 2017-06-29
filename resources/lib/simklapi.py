@@ -9,6 +9,8 @@ import json
 import xbmc
 import interface
 import httplib
+import utils
+
 from socket import gaierror
 
 __addon__ = interface.__addon__
@@ -65,6 +67,7 @@ class API:
         xbmc.log("Simkl: Usersettings: " + str(self.USERSETTINGS))
 
     def login(self):
+        utils.systemLock("SimklTrackerRunLogin")
         url = "/oauth/pin?client_id="
         url += APIKEY + "&redirect=" + REDIRECT_URI
 

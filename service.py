@@ -8,6 +8,11 @@ Creator: David Davó <david@ddavo.me>
 import sys, os
 import xbmcaddon
 import xbmc
+
+from resources.lib import utils
+utils.systemLock("SimklTrackerRun")
+utils.systemUnlockDelay("SimklTrackerRun", 5)
+
 from resources.lib import interface, engine
 from resources.lib import simklapi as API
 
