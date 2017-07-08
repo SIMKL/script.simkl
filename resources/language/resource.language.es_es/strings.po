@@ -42,6 +42,10 @@ msgctxt "#32008"
 msgid "Show bubble when scrobbled"
 msgstr "Mostrar notificación al scrobble"
 
+msgctxt "#32009"
+msgid "See options to customize Simkl TV Tracker"
+msgstr ""
+
 #Up to 32020 to settings
 
 msgctxt "#32021"
