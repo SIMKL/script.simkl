@@ -43,7 +43,15 @@ msgstr "Mostrar notificação quando scrobble"
 
 msgctxt "#32009"
 msgid "See options to customize Simkl TV Tracker"
-msgstr ""
+msgstr "Veja as opções para personalizar Simkl TV Tracker"
+
+msgctxt "#32010"
+msgid "You are not logged in"
+msgstr "Você não está logado"
+
+msgctxt "#32011"
+msgid "You are logged in"
+msgstr "Você está logado"
 
 #Up to 32020 to settings
 

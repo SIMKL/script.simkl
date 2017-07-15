@@ -47,7 +47,7 @@ class LoginDialog(xbmcgui.WindowXMLDialog):
                 notify(get_str(32031))
                 break
             cnt += 1
-            time.sleep(4)
+            xbmc.Monitor().waitForAbort(4)
 
         log("Stop waiting")
 

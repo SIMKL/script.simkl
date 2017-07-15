@@ -2,8 +2,8 @@
 <settings>
   <category label="LogIn">
     <setting label="token" id="token" type="text" default="" visible="false" />
-    <setting label="You are not logged in" type="lsep" visible="eq(-1,)"/>
-    <setting label="You are logged in" type="lsep" visible="!eq(-2,)"/>
+    <setting label="32010" type="lsep" visible="eq(-1,)"/>
+    <setting label="32011" type="lsep" visible="!eq(-2,)"/>
     <setting label="32001" type="action" action="NotifyAll(script.simkl,login)" visible="eq(-3,)"/>
     <setting label="32009" type="text" default="" visible="!eq(-4,)"/>
   </category>
