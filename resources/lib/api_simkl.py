@@ -136,12 +136,12 @@ class Simkl:
 
             #retry 3 times
             if r is None:
-                _count += 1
-                if _count <= 3:
-                    notify(get_str(32029).format(_count))
-                    time.sleep(10)
-                    continue
-                notify(get_str(32027))
+                # _count += 1
+                # if _count <= 3:
+                #     notify(get_str(32029).format(_count))
+                #     time.sleep(10)
+                #     continue
+                # notify(get_str(32027))
                 return False
             break
         return True

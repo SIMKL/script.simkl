@@ -106,22 +106,35 @@ class Player(xbmc.Player):
 
     def _thread_tracker(self):
         log("in tracker thread")
-        try:
-            total_time = self.getTotalTime()
-            perc_mark = int(get_setting("scr-pct"))
-            self._is_detected = True
-            while self._playback_lock.isSet() and not xbmc.abortRequested:
-                try:
-                    if min(99, 100 * self.getTime() / total_time) >= perc_mark:
-                        if self._api.mark_as_watched(self._item) and bool(get_setting("bubble")):
-                            self._show_bubble(self._item)
-                        self._playback_lock.clear()
-                except:
+        # try:
+        total_time = self.getTotalTime()
+        perc_mark = int(get_setting("scr-pct"))
+        self._is_detected = True
+        while self._playback_lock.isSet() and not xbmc.abortRequested:
+            try:
+                if min(99, 100 * self.getTime() / total_time) >= perc_mark:
+                    success = self._api.mark_as_watched(self._item)
+                    if not success:
+                        log("Failed to scrobble")
+                        notify("Failed to scrobble, retrying later") # Serialize this
+                    while not success:
+                        log("Retrying")
+                        if (self.getTime() / total_time) > 0.95:
+                            log("Stopped scrobbling")
+                            notify("Finally, failed to scrobble")
+                            break
+                        xbmc.sleep(30000)
+                        success = self._api.mark_as_watched(self._item)
+                    if success and bool(get_setting("bubble")):
+                        self._show_bubble(self._item)
+
                     self._playback_lock.clear()
-                xbmc.sleep(1000)
-            log('track stop')
-        except:
-            pass
+            except:
+                self._playback_lock.clear()
+            xbmc.sleep(1000)
+        log('track stop')
+        # except:
+        #     pass
 
     def _show_bubble(self, item):
         log("in bubble")

@@ -54,6 +54,10 @@ msgctxt "#32011"
 msgid "You are logged in"
 msgstr "Has iniciado sesión"
 
+
+
+
+
 #Up to 32020 to settings
 
 msgctxt "#32021"
