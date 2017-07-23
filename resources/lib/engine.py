@@ -106,7 +106,6 @@ class Player(xbmc.Player):
 
     def _thread_tracker(self):
         log("in tracker thread")
-        # try:
         total_time = self.getTotalTime()
         perc_mark = int(get_setting("scr-pct"))
         self._is_detected = True
@@ -116,12 +115,12 @@ class Player(xbmc.Player):
                     success = self._api.mark_as_watched(self._item)
                     if not success:
                         log("Failed to scrobble")
-                        notify("Failed to scrobble, retrying later") # Serialize this
+                        notify(get_str(32080))
                     while not success:
                         log("Retrying")
                         if (self.getTime() / total_time) > 0.95:
                             log("Stopped scrobbling")
-                            notify("Finally, failed to scrobble")
+                            notify(get_str(32081))
                             break
                         xbmc.sleep(30000)
                         success = self._api.mark_as_watched(self._item)
@@ -130,11 +129,9 @@ class Player(xbmc.Player):
 
                     self._playback_lock.clear()
             except:
-                self._playback_lock.clear()
+                pass
             xbmc.sleep(1000)
         log('track stop')
-        # except:
-        #     pass
 
     def _show_bubble(self, item):
         log("in bubble")
