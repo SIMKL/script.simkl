@@ -109,28 +109,32 @@ class Player(xbmc.Player):
         total_time = self.getTotalTime()
         perc_mark = int(get_setting("scr-pct"))
         self._is_detected = True
+        timeout = 1000
         while self._playback_lock.isSet() and not xbmc.abortRequested:
             try:
                 if min(99, 100 * self.getTime() / total_time) >= perc_mark:
                     success = self._api.mark_as_watched(self._item)
                     if not success:
-                        log("Failed to scrobble")
-                        notify(get_str(32080))
-                    while not success:
-                        log("Retrying")
-                        if (self.getTime() / total_time) > 0.95:
+                        if timeout == 1000:
+                            log("Failed to scrobble")
+                            notify(get_str(32080))
+                            timeout = 30000
+                            continue
+                        elif (self.getTime() / total_time) > 0.95:
                             log("Stopped scrobbling")
                             notify(get_str(32081))
                             break
-                        xbmc.sleep(30000)
-                        success = self._api.mark_as_watched(self._item)
-                    if success and bool(get_setting("bubble")):
+                        else:
+                            log("Retrying")
+                            success = self._api.mark_as_watched(self._item)
+
+                    elif success and bool(get_setting("bubble")):
                         self._show_bubble(self._item)
 
                     self._playback_lock.clear()
             except:
                 pass
-            xbmc.sleep(1000)
+            xbmc.sleep(timeout)
         log('track stop')
 
     def _show_bubble(self, item):
