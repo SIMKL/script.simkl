@@ -53,6 +53,10 @@ msgctxt "#32011"
 msgid "You are logged in"
 msgstr "Has iniciado sesión"
 
+msgctxt "#32012"
+msgid "Minimum file lenght for scrobbling (minutes)"
+msgstr "Duración mínima del archivo para scrobblear (minutos)"
+
 # Up to 32020 to settings
 msgctxt "#32021"
 msgid "Simkl login"
