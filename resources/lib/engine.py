@@ -112,7 +112,9 @@ class Player(xbmc.Player):
         timeout = 1000
         while self._playback_lock.isSet() and not xbmc.abortRequested:
             try:
-                if min(99, 100 * self.getTime() / total_time) >= perc_mark:
+                # The max() assures that the total time is over two minutes
+                # preventing it from scrobbling while buffering. Solved #31
+                if min(99, 100 * self.getTime() / max(120, total_time)) >= perc_mark:
                     success = self._api.mark_as_watched(self._item)
                     if not success:
                         if timeout == 1000:
