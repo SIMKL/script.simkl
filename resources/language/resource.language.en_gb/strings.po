@@ -64,7 +64,7 @@ msgid "Simkl login"
 msgstr ""
 
 msgctxt "#32022"
-msgid "Please visit {0} on \nyour device and enter this code"
+msgid "Please visit {0} on \ncomputer or phone and enter this code"
 msgstr ""
 
 msgctxt "#32023"
