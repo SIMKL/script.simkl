@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kodi-add-on-for-Simkl\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2018-07-03 13:22\n"
+"PO-Revision-Date: 2018-07-03 13:41\n"
 "Last-Translator: Simkl <crowdin@simkl.com>\n"
 "Language-Team: German\n"
 "MIME-Version: 1.0\n"
@@ -30,7 +30,7 @@ msgstr "Bibliothek synchronisieren"
 
 msgctxt "#32006"
 msgid "Scrobble at percentage"
-msgstr ""
+msgstr "Ab Prozentsatz scrobbeln"
 
 msgctxt "#32007"
 msgid "Checkin percentage"
@@ -38,23 +38,23 @@ msgstr ""
 
 msgctxt "#32008"
 msgid "Show bubble when scrobbled"
-msgstr ""
+msgstr "Hinweis anzeigen, wenn gescrobbelt wurde"
 
 msgctxt "#32009"
 msgid "See options to customize Simkl TV Tracker"
-msgstr ""
+msgstr "Öffne die Optionen, um den Simkl TV Tracker anzupassen"
 
 msgctxt "#32010"
 msgid "You are not logged in"
-msgstr ""
+msgstr "Du bist nicht eingeloggt"
 
 msgctxt "#32011"
 msgid "You are logged in"
-msgstr ""
+msgstr "Du bist eingeloggt"
 
 msgctxt "#32012"
 msgid "Minimum file lenght for scrobbling (minutes)"
-msgstr ""
+msgstr "Minimale Dateilänge zum Scrobbeln (in Minuten)"
 
 msgctxt "#32021"
 msgid "Simkl login"
@@ -71,23 +71,23 @@ msgstr "Verbleibende Zeit: {0}/{1}"
 
 msgctxt "#32025"
 msgid "Hello again, {0}"
-msgstr ""
+msgstr "Willkommen zurück, {0}"
 
 msgctxt "#32026"
 msgid "Please Log In in addon settings"
-msgstr ""
+msgstr "Bitte logge dich in den Add-on-Einstellungen ein"
 
 msgctxt "#32027"
 msgid "You don't have internet"
-msgstr ""
+msgstr "Du hast keine Internetverbindung"
 
 msgctxt "#32028"
 msgid "Scrobbling {0}"
-msgstr ""
+msgstr "Scrobbelt {0}"
 
 msgctxt "#32029"
 msgid "Error at scrobbling. Retrying ({0})"
-msgstr ""
+msgstr "Fehler beim Scrobbeln. Wiederhole ({0})"
 
 msgctxt "#32030"
 msgid "Login successful, {0}"
@@ -99,7 +99,7 @@ msgstr "Login war nicht möglich"
 
 msgctxt "#32032"
 msgid "You are alredy logged in as {0}"
-msgstr ""
+msgstr "Du bist bereits als {0} eingeloggt"
 
 msgctxt "#32033"
 msgid "Continue"
@@ -111,9 +111,9 @@ msgstr "Abbrechen"
 
 msgctxt "#32080"
 msgid "Failed to scrobble, retrying later"
-msgstr ""
+msgstr "Scrobbeln fehlgeschlagen, erneuter Versuch später"
 
 msgctxt "#32081"
 msgid "Finally, failed to scrobble"
-msgstr ""
+msgstr "Scrobbeln schlug fehl"
 
