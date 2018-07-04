@@ -1,0 +1,4 @@
+files:
+  - source: /resources/language/resource.language.en_gb/*.po
+    translation: >-
+      /resources/language/resource.language.%locale_with_underscore%/%original_file_name%
