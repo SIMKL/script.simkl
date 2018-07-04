@@ -54,7 +54,7 @@ msgid "You are logged in"
 msgstr ""
 
 msgctxt "#32012"
-msgid "Minimum file lenght for scrobbling (minutes)"
+msgid "Minimum file length for scrobbling (minutes)"
 msgstr ""
 
 #Up to 32020 to settings. 32021-2024 to login dialog
