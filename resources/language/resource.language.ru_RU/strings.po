@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kodi-add-on-for-Simkl\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2018-07-08 09:01\n"
+"PO-Revision-Date: 2018-07-08 09:21\n"
 "Last-Translator: Simkl <crowdin@simkl.com>\n"
 "Language-Team: Russian\n"
 "MIME-Version: 1.0\n"
@@ -34,7 +34,7 @@ msgstr "Скробблить при проценте просмотра"
 
 msgctxt "#32007"
 msgid "Checkin percentage"
-msgstr ""
+msgstr "Зачекинится на проценте"
 
 msgctxt "#32008"
 msgid "Show bubble when scrobbled"
@@ -42,78 +42,79 @@ msgstr "Показывать нотификейшн, когда проскроб
 
 msgctxt "#32009"
 msgid "See options to customize Simkl TV Tracker"
-msgstr ""
+msgstr "Смотрите Настройки чтобы кастомизировать Simkl TV Tracker"
 
 msgctxt "#32010"
 msgid "You are not logged in"
-msgstr ""
+msgstr "Вы не авторизованы"
 
 msgctxt "#32011"
 msgid "You are logged in"
-msgstr ""
+msgstr "Вы авторизованы"
 
 msgctxt "#32012"
 msgid "Minimum file length for scrobbling (minutes)"
-msgstr ""
+msgstr "Минимальная длина файла для скробблера (минут)"
 
 msgctxt "#32021"
 msgid "Simkl login"
-msgstr ""
+msgstr "Авторизироватся в Simkl"
 
 msgctxt "#32022"
 msgid "Please visit {0} on \n"
 "computer or phone and enter this code"
-msgstr ""
+msgstr "Пожалуйста, посетите {0} на\n"
+"компьютере или телефоне и введите код выше"
 
 msgctxt "#32023"
 msgid "Remaining time: {0}/{1}"
-msgstr ""
+msgstr "Оставшееся время: {0}/{1}"
 
 msgctxt "#32025"
 msgid "Hello again, {0}"
-msgstr ""
+msgstr "Привет, {0}"
 
 msgctxt "#32026"
 msgid "Please Log In in addon settings"
-msgstr ""
+msgstr "Пожалуйста, войдите в настройках аддона"
 
 msgctxt "#32027"
 msgid "You don't have internet"
-msgstr ""
+msgstr "У вас нет интернета"
 
 msgctxt "#32028"
 msgid "Scrobbling {0}"
-msgstr ""
+msgstr "Скробблим {0}"
 
 msgctxt "#32029"
 msgid "Error at scrobbling. Retrying ({0})"
-msgstr ""
+msgstr "Ошибка при скроббле. Повторная попытка ({0})"
 
 msgctxt "#32030"
 msgid "Login successful, {0}"
-msgstr ""
+msgstr "Успешно залогинились, {0}"
 
 msgctxt "#32031"
 msgid "Couldn't log in"
-msgstr ""
+msgstr "Не смогли залогинится"
 
 msgctxt "#32032"
-msgid "You are alredy logged in as {0}"
-msgstr ""
+msgid "You are already logged in as {0}"
+msgstr "Вы уже вошли как {0}"
 
 msgctxt "#32033"
 msgid "Continue"
-msgstr ""
+msgstr "Продолжить"
 
 msgctxt "#32034"
 msgid "Cancel"
-msgstr ""
+msgstr "Отмена"
 
 msgctxt "#32080"
 msgid "Failed to scrobble, retrying later"
-msgstr ""
+msgstr "Не удалось заскробблить, попробуем позже"
 
 msgctxt "#32081"
 msgid "Finally, failed to scrobble"
-msgstr ""
+msgstr "Окончательно не удалось заскробблить"
 
