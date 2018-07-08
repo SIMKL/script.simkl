@@ -102,7 +102,7 @@ msgid "Couldn't log in"
 msgstr ""
 
 msgctxt "#32032"
-msgid "You are alredy logged in as {0}"
+msgid "You are already logged in as {0}"
 msgstr ""
 
 msgctxt "#32033"
