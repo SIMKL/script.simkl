@@ -24,5 +24,9 @@
       <fanart>resources/fanart.jpg</fanart>
     </assets>
     <language>en</language>
+    <news>
+      v2.2 (19-10-12)
+      - upgraded stream detection + fixed random scrobbling
+    </news>
   </extension>
 </addon>
