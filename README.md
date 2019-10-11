@@ -23,8 +23,6 @@ You can use Crowdin [https://crowdin.com/project/Kodi-add-on-for-Simkl](https://
 ## Donations:
 It would be very nice if you invite me for a cup of coffee:
 
-[<img src="https://www.coinbase.com/assets/buttons/donation_large-5cf4f17cc2d2ae2f45b6b021ee498297409c94dcf0ba1bbf76fd5668e80b0d02.png">](https://www.coinbase.com/daviddavo)
-
 Bitcoin address: 1PcbSQrBddJszsTiRhqHyLntp7Lxfuyaio
 
 Thanks, you can write me an e-mail to david@ddavo.me with your receipt, and I'll send you a photo drinking the cup of coffee you invited me to.
