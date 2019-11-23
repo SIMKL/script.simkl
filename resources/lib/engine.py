@@ -128,7 +128,7 @@ class Player(xbmc.Player):
 
     def _thread_tracker(self):
         log("in tracker thread")
-        xbmc.sleep(1000)
+        xbmc.sleep(2000)
 
         total_time = int(self.getTotalTime())
         total_time_min = int(get_setting("min-length"))
