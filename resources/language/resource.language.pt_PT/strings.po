@@ -1,20 +1,22 @@
+# Kodi Media Center language file
+# Addon Name: Simkl TV Tracker
+# Addon id: script.services.simkl
+
 msgid ""
 msgstr ""
-"Project-Id-Version: Kodi-add-on-for-Simkl\n"
+"Project-Id-Version: Kodi Addons\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2019-05-30 18:03\n"
-"Last-Translator: Simkl\n"
+"PO-Revision-Date: 2019-12-15 HO:MI+ZONE\n"
+"Last-Translator: BlackSpirits\n"
 "Language-Team: Portuguese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: pt\n"
+"Language: pt-PT\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: crowdin.com\n"
-"X-Crowdin-Project: Kodi-add-on-for-Simkl\n"
-"X-Crowdin-Language: pt-PT\n"
-"X-Crowdin-File: /master/resources/language/resource.language.en_gb/strings.po\n"
+
+# Settings
 
 msgctxt "#32001"
 msgid "Please click to Log In"
@@ -56,19 +58,21 @@ msgctxt "#32012"
 msgid "Minimum file length for scrobbling (minutes)"
 msgstr "Tempo mínimo do ficheiro, em minutos, para ativar a sincronização"
 
+# Up to 32020 to settings. 32021-2024 to login dialog
+
 msgctxt "#32021"
 msgid "Simkl login"
 msgstr "Iniciar Sessão em Simkl"
 
 msgctxt "#32022"
-msgid "Please visit {0} on \n"
-"computer or phone and enter this code"
-msgstr "Por favor, visita o endereço {0} no\n"
-"seu dispositivo e digite o seguinte código"
+msgid "Please visit {0} on \ncomputer or phone and enter this code"
+msgstr "Por favor, visita o endereço {0} no\nseu dispositivo e digite o seguinte código"
 
 msgctxt "#32023"
 msgid "Remaining time: {0}/{1}"
 msgstr "Tempo restante: {0}/{1}"
+
+# Blahblahblah
 
 msgctxt "#32025"
 msgid "Hello again, {0}"
@@ -110,6 +114,8 @@ msgctxt "#32034"
 msgid "Cancel"
 msgstr "Cancelar"
 
+# 80 and above for warnings and errors
+
 msgctxt "#32080"
 msgid "Failed to scrobble, retrying later"
 msgstr "Não foi possível sincronizar os serviços, tentaremos de novo brevemente"
@@ -118,3 +124,6 @@ msgctxt "#32081"
 msgid "Finally, failed to scrobble"
 msgstr "Infelizmente, não foi possível sincronizar"
 
+# msgctxt "#"
+# msgid ""
+# msgstr ""
