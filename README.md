@@ -3,7 +3,7 @@
 
 
 ## Installing from Kodi
-1. Open Kodi. Then go to System » Settings » Add-ons » Install from repository » Services » Simkl TV Tracker and click Install
+1. Open Kodi. Then go to System » Settings » Add-ons » Install from repository » Kodi Add-on repository » Services » Simkl TV Tracker and click Install
 2. Now it should show a prompt with instructions to Login. If this doesn't happen, go to Settings » Add-ons » My Add-ons » Services » Simkl » Configure » LogIn
 3. Please report any bugs [here](https://github.com/SIMKL/script.simkl/issues)
 
