@@ -16,8 +16,7 @@ msgstr ""
 "Language: en\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# Settings
-
+#Settings
 msgctxt "#32001"
 msgid "Please click to Log In"
 msgstr ""
@@ -58,7 +57,7 @@ msgctxt "#32012"
 msgid "Minimum file length for scrobbling (minutes)"
 msgstr ""
 
-# Up to 32020 to settings. 32021-2024 to login dialog
+#Up to 32020 to settings. 32021-2024 to login dialog
 
 msgctxt "#32021"
 msgid "Simkl login"
@@ -124,6 +123,6 @@ msgctxt "#32081"
 msgid "Finally, failed to scrobble"
 msgstr ""
 
-# msgctxt "#"
-# msgid ""
-# msgstr ""
+#msgctxt "#"
+#msgid ""
+#msgstr ""
