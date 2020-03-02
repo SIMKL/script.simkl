@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kodi-add-on-for-Simkl\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2020-03-02 15:13\n"
+"PO-Revision-Date: 2020-03-02 15:20\n"
 "Last-Translator: David Davó\n"
 "Language-Team: Vietnamese\n"
 "MIME-Version: 1.0\n"
@@ -66,19 +66,19 @@ msgstr "Vui lòng truy cập {0} trên máy tính hoặc điện thoại và nh�
 
 msgctxt "#32023"
 msgid "Remaining time: {0}/{1}"
-msgstr ""
+msgstr "Thời gian còn lại: {0}/{1}"
 
 msgctxt "#32025"
 msgid "Hello again, {0}"
-msgstr ""
+msgstr "Xin chào, {0}"
 
 msgctxt "#32026"
 msgid "Please Log In in addon settings"
-msgstr ""
+msgstr "Vui lòng đăng nhập trong cài đặt tiện ích"
 
 msgctxt "#32027"
 msgid "You don't have internet"
-msgstr ""
+msgstr "Bạn không có internet"
 
 msgctxt "#32028"
 msgid "Scrobbling {0}"
