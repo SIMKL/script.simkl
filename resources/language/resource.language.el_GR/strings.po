@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kodi-add-on-for-Simkl\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2020-06-13 22:52\n"
+"PO-Revision-Date: 2020-06-13 23:02\n"
 "Last-Translator: David Davó\n"
 "Language-Team: Greek\n"
 "MIME-Version: 1.0\n"
@@ -43,7 +43,7 @@ msgstr "Εμφάνιση σύννεφου για την σήμανση 'παρα
 
 msgctxt "#32009"
 msgid "See options to customize Simkl TV Tracker"
-msgstr ""
+msgstr "Επιλογές για τη διαμόρφοση του ιχνηλάτη Simkl"
 
 msgctxt "#32010"
 msgid "You are not logged in"
@@ -88,7 +88,7 @@ msgstr ""
 
 msgctxt "#32029"
 msgid "Error at scrobbling. Retrying ({0})"
-msgstr ""
+msgstr "Σφάλμα κατά τη σήμανση 'παρακολουθήθηκε΄. Επανάληψη ({0})"
 
 msgctxt "#32030"
 msgid "Login successful, {0}"
@@ -112,9 +112,9 @@ msgstr "Ακύρωση"
 
 msgctxt "#32080"
 msgid "Failed to scrobble, retrying later"
-msgstr ""
+msgstr "Αποτυχία σήμανσης 'παρακολουθήθηκε΄, επανάληψη αργότερα"
 
 msgctxt "#32081"
 msgid "Finally, failed to scrobble"
-msgstr ""
+msgstr "Αποτυχία σήμανσης 'παρακολουθήθηκε΄"
 
