@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Kodi-add-on-for-Simkl\n"
 "Report-Msgid-Bugs-To: alanwww1@xbmc.org\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2020-09-21 06:23\n"
+"PO-Revision-Date: 2020-09-21 06:33\n"
 "Last-Translator: David Davó\n"
 "Language-Team: Finnish\n"
 "MIME-Version: 1.0\n"
@@ -68,19 +68,19 @@ msgstr "Vieraile osoitteessa {0} teitokoneellasi tai mobiililaitteellasi ja syö
 
 msgctxt "#32023"
 msgid "Remaining time: {0}/{1}"
-msgstr ""
+msgstr "Jäljellä oleva aika: {0}/{1}"
 
 msgctxt "#32025"
 msgid "Hello again, {0}"
-msgstr ""
+msgstr "Hei taas, {0}"
 
 msgctxt "#32026"
 msgid "Please Log In in addon settings"
-msgstr ""
+msgstr "Ole hyvä ja kirjaudu palveluun laajennuksen asetusten kautta"
 
 msgctxt "#32027"
 msgid "You don't have internet"
-msgstr ""
+msgstr "Sinulla ei ole internetyhteyttä"
 
 msgctxt "#32028"
 msgid "Scrobbling {0}"
@@ -88,33 +88,33 @@ msgstr ""
 
 msgctxt "#32029"
 msgid "Error at scrobbling. Retrying ({0})"
-msgstr ""
+msgstr "Virhe toistotilan tallennuksessa. Yritetään uudestaan ({0})"
 
 msgctxt "#32030"
 msgid "Login successful, {0}"
-msgstr ""
+msgstr "Kirjautuminen onnistui, {0}"
 
 msgctxt "#32031"
 msgid "Couldn't log in"
-msgstr ""
+msgstr "Kirjautuminen ei onnistunut"
 
 msgctxt "#32032"
 msgid "You are already logged in as {0}"
-msgstr ""
+msgstr "Olet kirjautunut käyttäjänä {0}"
 
 msgctxt "#32033"
 msgid "Continue"
-msgstr ""
+msgstr "Jatka"
 
 msgctxt "#32034"
 msgid "Cancel"
-msgstr ""
+msgstr "Peruuta"
 
 msgctxt "#32080"
 msgid "Failed to scrobble, retrying later"
-msgstr ""
+msgstr "Toistotilan tallennus epäonnistui, yritetää myöhemmin uudelleen"
 
 msgctxt "#32081"
 msgid "Finally, failed to scrobble"
-msgstr ""
+msgstr "Loppujen lopuksi, toistotilan tallennus epäonnistui"
 
