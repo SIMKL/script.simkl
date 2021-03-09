@@ -6,10 +6,10 @@ import xbmc
 import json
 import threading
 
-from interface import notify
-from utils import log
-from utils import get_setting
-from utils import get_str
+from resources.lib.interface import notify
+from resources.lib.utils import log
+from resources.lib.utils import get_setting
+from resources.lib.utils import get_str
 
 class Player(xbmc.Player):
     def __init__(self, api):
@@ -137,7 +137,7 @@ class Player(xbmc.Player):
         timeout = 1000
         # if total_time set and is lower than total_time_min then we do not start the loop at all and stop the thread,
         if total_time <= 0 or total_time > total_time_min:
-            while self._playback_lock.isSet() and not xbmc.abortRequested:
+            while self._playback_lock.isSet() and not xbmc.Monitor().abortRequested():
                 try:
                     # The max() assures that the total time is over two minutes
                     # preventing it from scrobbling while buffering and solving #31
