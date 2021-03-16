@@ -6,15 +6,15 @@ import json
 import time
 import xbmc
 
-import httplib
+import http.client
 
-from interface import notify
-from interface import LoginDialog
-from utils import get_str
-from utils import get_setting
-from utils import set_setting
-from utils import log
-from utils import __addon__
+from resources.lib.interface import notify
+from resources.lib.interface import LoginDialog
+from resources.lib.utils import get_str
+from resources.lib.utils import get_setting
+from resources.lib.utils import set_setting
+from resources.lib.utils import log
+from resources.lib.utils import __addon__
 
 REDIRECT_URI = "http://simkl.com"
 APIKEY = '62a587ec2a82dbed02c6ab48b923d72e775cb1096d2de60d04502413e36ef100'
@@ -108,9 +108,7 @@ class Simkl:
             # TESTED
             s_data[item["type"]] = [{
                 "title": item["title"],
-                "ids": {
-                    "tvdb": item["tvdb"]
-                },
+                "ids": item['ids'],
                 "seasons": [{
                     "number": item['season'],
                     "episodes": [{
@@ -125,8 +123,8 @@ class Simkl:
             }
             if "simkl" in item:
                 _prep["ids"] = {"simkl": item["simkl"]}
-            elif "imdb" in item:
-                _prep["ids"] = {"imdb": item["imdb"]}
+            elif "ids" in item:
+                _prep["ids"] = item['ids']
 
             s_data[item["type"]] = [_prep]
 
@@ -139,7 +137,7 @@ class Simkl:
 
     def _http(self, url, headers={}, body=None, is_json=True):
         try:
-            con = httplib.HTTPSConnection("api.simkl.com")
+            con = http.client.HTTPSConnection("api.simkl.com")
             con.request("GET", url, headers=headers, body=body)
             r = con.getresponse().read().decode("utf-8")
             if r.find('user_token_failed') != -1:
