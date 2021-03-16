@@ -1,6 +1,6 @@
 import xbmc
 
-from utils import log
+from resources.lib.utils import log
 
 
 class Monitor(xbmc.Monitor):

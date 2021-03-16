@@ -4,9 +4,9 @@ import time
 import threading
 import xbmc, xbmcgui, xbmcaddon
 
-from utils import get_str
-from utils import log
-from utils import __addon__
+from resources.lib.utils import get_str
+from resources.lib.utils import log
+from resources.lib.utils import __addon__
 
 __icon__ = __addon__.getAddonInfo("icon")
 xbmc.log("Icon = " + str(__icon__))
