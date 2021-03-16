@@ -25,6 +25,8 @@
     </assets>
     <language>en</language>
     <news>
+      v3.0 (21-03-16)
+      - Kodi 19+ support
       v2.2 (19-10-12)
       - upgraded stream detection + fixed random scrobbling
     </news>
