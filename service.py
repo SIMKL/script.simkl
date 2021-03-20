@@ -7,6 +7,7 @@ Creator: David Davó <david@ddavo.me>
 
 import sys
 import xbmc
+import xbmcvfs
 
 from resources.lib.utils import log
 from resources.lib.utils import system_lock
@@ -17,7 +18,7 @@ from resources.lib import events
 
 if __name__ == "__main__":
     system_lock("SimklTrackerRun", 5)
-    log("dir = " + str(xbmc.translatePath("special://home")))
+    log("dir = " + str(xbmcvfs.translatePath("special://home")))
     log("Python Version = " + str(sys.version))
     log("args = " + str(sys.argv))
 
