@@ -18,7 +18,7 @@
 - [x] Make it work on Android
 
 ## Join the conversation:
-- Discuss on Discord [https://discord.gg/JRtwsfG](https://discord.gg/u89XfYn)
+- Discuss on Discord [https://discord.gg/u89XfYn](https://discord.gg/u89XfYn)
 - Post bugs, feature requests on Github https://github.com/SIMKL/script.simkl/issues
 
 [license]: https://github.com/SIMKL/script.simkl/blob/master/LICENSE.txt
