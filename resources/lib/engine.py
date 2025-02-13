@@ -162,7 +162,7 @@ class Player(xbmc.Player):
                             else:
                                 log("Retrying")
 
-                        elif success and bool(get_setting("bubble")):
+                        elif success and (get_setting("bubble").lower() in ['true', '1']):
                             self._show_bubble(self._item)
                             break
                 except:
