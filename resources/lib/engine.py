@@ -141,7 +141,8 @@ class Player(xbmc.Player):
         xbmc.sleep(2000)
 
         total_time = int(self.getTotalTime())
-        total_time_min = int(get_setting("min-length"))
+        # convert total_time_min into seconds, since it is stored as minutes
+        total_time_min = int(get_setting("min-length")) * 60
         perc_mark = int(get_setting("scr-pct"))
         self._is_detected = True
         timeout = 1000
