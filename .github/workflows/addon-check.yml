@@ -1,0 +1,16 @@
+name: Kodi addon check
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  kodi-addon-checker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: xbmc/action-kodi-addon-checker@v1.3
+        with:
+          kodi-version: matrix
+          addon-id: ${{ github.event.repository.name }}

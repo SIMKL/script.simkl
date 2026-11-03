@@ -1,0 +1,26 @@
+name: Submit to the Kodi repository
+
+# Started by hand from the Actions tab (Run workflow) on the tagged commit: opens the pull request against
+# xbmc/repo-scripts (matrix). The add-on zip is built with git archive, so the files marked export-ignore in
+# .gitattributes stay out of it. Needs the GH_USERNAME, GH_TOKEN and EMAIL repository secrets (a GitHub user with a
+# fork of repo-scripts, a token with the repo scope, the email for the commit); without them the run stops at once.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  kodi-addon-submitter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Kodi addon submitter
+        uses: xbmc/action-kodi-addon-submitter@v1.3
+        with:
+          kodi-repository: repo-scripts
+          kodi-version: matrix
+          addon-id: script.simkl
+          sub-directory: false
+        env:
+          GH_USERNAME: ${{ secrets.GH_USERNAME }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          EMAIL: ${{ secrets.EMAIL }}
