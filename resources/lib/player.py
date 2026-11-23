@@ -31,6 +31,8 @@ IDS_PROPERTIES = ('script.simkl.ids', 'script.trakt.ids')
 PAUSED_PROPERTY = 'script.simkl.paused'
 EXCLUDE_PROPERTIES = ('script.simkl.exclude', 'script.trakt.exclude')
 SHOW_PREFIX = 'tvshow.'
+# the reasons identify() gives when a stream has no ids (yet): an add-on may still add them after playback started
+NO_IDS_REASONS = ('movie without ids', 'episode without ids', 'episode without show ids', 'no ids')
 # what this add-on tells the others: the item it tracks (window property) and the watches it recorded (NotifyAll)
 PLAYING_PROPERTY = 'script.simkl.playing'
 # a show's ids do not change between the hundred OnUpdate events of a season mark
@@ -461,10 +463,11 @@ def library_identity():
     return (data['type'], int(data['id'])) if data.get('type') in ('movie', 'episode') and data.get('id') else (None, 0)
 
 
-def identify(player):
+def identify(player, window=True):
     """What is playing, as ('ok', item), ('file', candidate) for a file that only the file search can name, or
     ('skip', reason). A non-library episode's own uniqueid is the episode's ids (Kodi's convention); its show's ids
-    must come from the script.simkl.ids / script.trakt.ids window property."""
+    must come from the script.simkl.ids / script.trakt.ids window property. window: whether the home-window ids count;
+    a look after the start leaves them out, as they may already be the next item's, while Kodi still reports this one."""
     data = _playing_item()
     if not data:
         return 'skip', 'no video player'
@@ -488,7 +491,7 @@ def identify(player):
         if item['trailer'] and item['trailer'] in (path, data.get('file')):
             return 'skip', 'trailer'
         item['file'] = path or item['file']
-        item['ids'] = item['ids'] or _property_ids(custom, False, stream)
+        item['ids'] = item['ids'] or _property_ids(custom, False, stream and window)
         if item['ids']:
             return 'ok', item
         return ('file', item) if is_local(item['file']) else ('skip', 'movie without ids')
@@ -497,7 +500,7 @@ def identify(player):
         if item is None:
             return 'skip', 'episode %s is not in the library any more' % dbid
         item['file'] = path or item['file']
-        item['ids'] = item['ids'] or _property_ids(custom, True, stream)
+        item['ids'] = item['ids'] or _property_ids(custom, True, stream and window)
         if item['ids'] or item['episode_ids']:
             return 'ok', item
         return ('file', item) if is_local(item['file']) else ('skip', 'episode without ids')
@@ -520,12 +523,12 @@ def identify(player):
     if episodic:
         if number <= 0:
             return 'skip', 'episode without a number'
-        show_ids = _property_ids(custom, True, stream)
+        show_ids = _property_ids(custom, True, stream and window)
         if show_ids:
             episode_ids = episode_ids_from(data.get('uniqueid')) or episode_ids_from(_player_ids()) or episode_ids_from(_flat_ids(custom, ''))
             return 'ok', remote_episode(show_ids, showtitle, title, year, season, number, path, runtime, episode_ids)
     else:
-        ids = utils.ids_from(data.get('uniqueid')) or _player_ids() or _property_ids(custom, False, stream)
+        ids = utils.ids_from(data.get('uniqueid')) or _player_ids() or _property_ids(custom, False, stream and window)
         if ids:
             return 'ok', remote_movie(ids, title, year, path, runtime)
     if is_local(path):

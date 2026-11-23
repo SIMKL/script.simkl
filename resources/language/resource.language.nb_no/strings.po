@@ -659,3 +659,11 @@ msgstr "den lokale kopien av Simkl-historikken kunne ikke lagres"
 msgctxt "#32314"
 msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr "{0} er allerede sett i Kodi, så den ble ikke flyttet til «Vil se»"
+
+msgctxt "#32315"
+msgid "Retry for late metadata (up to 30 seconds)"
+msgstr "Prøv på nytt for forsinkede metadata (opptil 30 sekunder)"
+
+msgctxt "#32316"
+msgid "Some add-ons add the TVDB/TMDB ids a few seconds after playback has started. While no id is available, the add-on looks for the ids again every second, for up to 30 seconds from the start of playback."
+msgstr "Noen tillegg legger til TVDB/TMDB-ID-ene først noen sekunder etter at avspillingen har startet. Så lenge ingen ID er tilgjengelig, ser tillegget etter ID-ene på nytt hvert sekund, i opptil 30 sekunder fra avspillingens start."

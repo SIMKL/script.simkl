@@ -659,3 +659,11 @@ msgstr "místní kopii historie ze Simklu se nepodařilo uložit"
 msgctxt "#32314"
 msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr "Film {0} je v Kodi již zhlédnutý, proto nebyl přesunut do seznamu Chci vidět"
+
+msgctxt "#32315"
+msgid "Retry for late metadata (up to 30 seconds)"
+msgstr "Opakovat pro opožděná metadata (až 30 sekund)"
+
+msgctxt "#32316"
+msgid "Some add-ons add the TVDB/TMDB ids a few seconds after playback has started. While no id is available, the add-on looks for the ids again every second, for up to 30 seconds from the start of playback."
+msgstr "Některé doplňky přidají ID TVDB/TMDB až několik sekund po zahájení přehrávání. Dokud není žádné ID k dispozici, doplněk je hledá znovu každou sekundu, nejdéle 30 sekund od zahájení přehrávání."

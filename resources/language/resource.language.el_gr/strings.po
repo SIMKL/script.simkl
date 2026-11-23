@@ -659,3 +659,11 @@ msgstr "δεν ήταν δυνατή η αποθήκευση του τοπικο
 msgctxt "#32314"
 msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr "Το {0} είναι ήδη προβληθέν στο Kodi, οπότε δεν μεταφέρθηκε στο «Θέλω να δω»"
+
+msgctxt "#32315"
+msgid "Retry for late metadata (up to 30 seconds)"
+msgstr "Επανάληψη για μεταδεδομένα που καθυστερούν (έως 30 δευτερόλεπτα)"
+
+msgctxt "#32316"
+msgid "Some add-ons add the TVDB/TMDB ids a few seconds after playback has started. While no id is available, the add-on looks for the ids again every second, for up to 30 seconds from the start of playback."
+msgstr "Ορισμένα πρόσθετα προσθέτουν τα αναγνωριστικά TVDB/TMDB λίγα δευτερόλεπτα μετά την έναρξη της αναπαραγωγής. Όσο δεν υπάρχει διαθέσιμο αναγνωριστικό, το πρόσθετο τα αναζητά ξανά κάθε δευτερόλεπτο, για έως 30 δευτερόλεπτα από την έναρξη της αναπαραγωγής."
