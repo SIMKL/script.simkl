@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.simkl"
        name="Simkl TV Tracker"
-       version="4.0.0"
+       version="4.1.0"
        provider-name="Simkl">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
@@ -32,6 +32,8 @@
     </assets>
     <language>en</language>
     <news>
+v4.1.0 (28-11-26)
+- new option "Retry for late ids" (off by default): a stream that starts without ids is looked at again for up to 30 seconds, for add-ons that set the ids after the playback has started
 v4.0.0 (26-10-26)
 - new sign-in with a code on simkl.com/pin or a QR code for the phone; existing logins keep working, reconnect from the settings
 - real-time tracking: start, pause and stop as they happen, position kept on Simkl when you stop early

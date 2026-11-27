@@ -661,8 +661,8 @@ msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr "{0} đã ở trạng thái đã xem trong Kodi, nên không được chuyển sang Dự định xem"
 
 msgctxt "#32315"
-msgid "Retry for late metadata (up to 30 seconds)"
-msgstr "Thử lại khi siêu dữ liệu đến muộn (tối đa 30 giây)"
+msgid "Retry for late ids (up to 30 seconds)"
+msgstr "Thử lại khi ID đến muộn (tối đa 30 giây)"
 
 msgctxt "#32316"
 msgid "Some add-ons add the TVDB/TMDB ids a few seconds after playback has started. While no id is available, the add-on looks for the ids again every second, for up to 30 seconds from the start of playback."

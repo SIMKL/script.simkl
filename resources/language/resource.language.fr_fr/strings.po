@@ -661,9 +661,9 @@ msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr "{0} est déjà vu dans Kodi, il n'a donc pas été déplacé vers la liste À regarder"
 
 msgctxt "#32315"
-msgid "Retry for late metadata (up to 30 seconds)"
-msgstr "Réessayer pour les métadonnées tardives (jusqu'à 30 secondes)"
+msgid "Retry for late ids (up to 30 seconds)"
+msgstr "Réessayer pour les identifiants tardifs (jusqu'à 30 secondes)"
 
 msgctxt "#32316"
 msgid "Some add-ons add the TVDB/TMDB ids a few seconds after playback has started. While no id is available, the add-on looks for the ids again every second, for up to 30 seconds from the start of playback."
-msgstr "Certains add-ons n'ajoutent les ID TVDB/TMDB que quelques secondes après le début de la lecture. Tant qu'aucun ID n'est disponible, l'add-on les recherche de nouveau chaque seconde, pendant 30 secondes maximum à partir du début de la lecture."
+msgstr "Certaines extensions n'ajoutent les identifiants TVDB/TMDB que quelques secondes après le début de la lecture. Tant qu'aucun identifiant n'est disponible, l'extension les recherche de nouveau chaque seconde, pendant 30 secondes maximum à partir du début de la lecture."

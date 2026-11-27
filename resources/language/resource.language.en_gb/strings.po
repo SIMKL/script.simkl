@@ -683,7 +683,7 @@ msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr ""
 
 msgctxt "#32315"
-msgid "Retry for late metadata (up to 30 seconds)"
+msgid "Retry for late ids (up to 30 seconds)"
 msgstr ""
 
 msgctxt "#32316"

@@ -661,9 +661,9 @@ msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr "{0} 在 Kodi 中已观看，因此未移至“想看”"
 
 msgctxt "#32315"
-msgid "Retry for late metadata (up to 30 seconds)"
-msgstr "为延迟出现的元数据重试(最多30秒)"
+msgid "Retry for late ids (up to 30 seconds)"
+msgstr "为延迟出现的 ID 重试（最多 30 秒）"
 
 msgctxt "#32316"
 msgid "Some add-ons add the TVDB/TMDB ids a few seconds after playback has started. While no id is available, the add-on looks for the ids again every second, for up to 30 seconds from the start of playback."
-msgstr "某些插件会在播放开始数秒后才添加 TVDB/TMDB ID。在没有任何 ID 时,插件会从播放开始起最多30秒内每秒重新查找一次。"
+msgstr "某些插件会在播放开始数秒后才添加 TVDB/TMDB ID。在没有任何 ID 时，插件会从播放开始起最多 30 秒内每秒重新查找一次。"

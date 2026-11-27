@@ -97,6 +97,38 @@ Rules of the window property:
 - It is read only for streams and plugin items, never for a local file or a library item, since Kodi announces no end for a playback it replaces in place and a stale value would name the wrong file.
 - Prefer the `ListItem` property: it travels with the item through playlists and your own autoplay, and it is the only thing the context menu reads.
 
+## Ids that come late
+
+Some add-ons learn the ids only after the playback has started, a stream that is matched while it already plays for example. For these the user can switch on **Retry for late ids (up to 30 seconds)** in the Scrobbling settings; it is off by default. With it on, a stream that starts without ids is looked at again once a second, for up to 30 seconds from its start, and tracked from the moment the ids are there.
+
+Put the ids on the playing item with `updateInfoTag`:
+
+```python
+import json
+import xbmc
+import xbmcgui
+
+player = xbmc.Player()
+item = xbmcgui.ListItem("Cat's in the Bag...")
+item.setPath(player.getPlayingFile())   # Kodi takes the update only for the file that is playing
+item.setInfo('video', {
+    'mediatype': 'episode',
+    'tvshowtitle': 'Breaking Bad',
+    'season': 1,
+    'episode': 2,
+    'title': "Cat's in the Bag...",
+})
+item.setProperty('script.simkl.ids', json.dumps({'tvdb': 81189}))   # a movie: its own ids here, or setUniqueIDs
+player.updateInfoTag(item)
+```
+
+Rules of the late ids:
+
+- Only the playing item is read on these later looks: its unique ids, its properties and the `VideoPlayer.*` labels. Ids on the home window are not, since a value set there after the start belongs to the next playback.
+- `updateInfoTag` replaces the item's whole video info, so pass the media type, the title and, for an episode, the season and episode numbers in the same call as the ids.
+- Nothing is sent to Simkl while the add-on waits. After 30 seconds without ids the playback is left alone (`not tracked: no ids in 30 seconds`), as it is at once with the option off.
+- Set the ids before the playback wherever you can: that works for every user, the late way only for those who switched the option on.
+
 ## Keeping the add-on out
 
 - Your add-on scrobbles to Simkl itself: set `script.simkl.paused` to `true` (a property of the `ListItem`, or of the home window) and this add-on leaves that playback alone, so the user is not reported twice.

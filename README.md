@@ -93,7 +93,7 @@ A watch or a mark that could not be sent (offline, Simkl down) is kept on disk a
 | Section | What is there |
 |---|---|
 | **Account** | Status, then Log in, Reconnect with the new sign-in or Log out, whichever applies |
-| **Scrobbling** | Movies, TV shows and anime, the percentage, the minimum length, the notification, the rating prompt after a movie, rewatches (Pro or VIP), whether watched marks and ratings made in Kodi are sent to Simkl |
+| **Scrobbling** | Movies, TV shows and anime, the percentage, the minimum length, the notification, the rating prompt after a movie, rewatches (Pro or VIP), the retry for ids an add-on sets late, whether watched marks and ratings made in Kodi are sent to Simkl |
 | **Sync from Simkl** | Sync updates now, automatic sync and its interval, continue watching, Simkl ratings into Kodi, the result of the last sync, reset |
 | **Exclusions** | Live TV, HTTP streams, add-on playbacks, up to five folders |
 | **Advanced** | Debug logging, "Show the Simkl log" (the Simkl lines of the Kodi log on screen, also saved as `simkl.log` next to the add-on's settings for a bug report), the Kodi log's location |
