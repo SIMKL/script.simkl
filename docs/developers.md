@@ -110,7 +110,7 @@ import xbmcgui
 
 player = xbmc.Player()
 item = xbmcgui.ListItem("Cat's in the Bag...")
-item.setPath(player.getPlayingFile())   # Kodi takes the update only for the file that is playing
+item.setPath(xbmc.getInfoLabel('Player.Filenameandpath'))   # the playing item's own path, see the rules below
 item.setInfo('video', {
     'mediatype': 'episode',
     'tvshowtitle': 'Breaking Bad',
@@ -124,8 +124,9 @@ player.updateInfoTag(item)
 
 Rules of the late ids:
 
-- Only the playing item is read on these later looks: its unique ids, its properties and the `VideoPlayer.*` labels. Ids on the home window are not, since a value set there after the start belongs to the next playback.
-- `updateInfoTag` replaces the item's whole video info, so pass the media type, the title and, for an episode, the season and episode numbers in the same call as the ids.
+- On these later looks the ids are read from the playing item only: its unique ids, its properties and the `VideoPlayer.*` labels. Ids on the home window are not, since a value set there after the start belongs to the next playback. The `script.simkl.paused` flag still counts wherever it shows up, on the item or on the home window, and ends the wait.
+- Kodi takes the update only when it carries the playing item's own path, which the `Player.Filenameandpath` label gives. For an item a plugin resolved that is its `plugin://` URL, not the stream `getPlayingFile()` returns; an update under any other path is dropped without a word.
+- `updateInfoTag` replaces the item's whole video info, so pass the media type, the title and, for an episode, the season and episode numbers in the same call as the ids. An episode without its number is not waited for: one that starts that way, or shows up that way on a later look, is left alone at once (`not tracked: episode without a number`).
 - Nothing is sent to Simkl while the add-on waits. After 30 seconds without ids the playback is left alone (`not tracked: no ids in 30 seconds`), as it is at once with the option off.
 - Set the ids before the playback wherever you can: that works for every user, the late way only for those who switched the option on.
 
