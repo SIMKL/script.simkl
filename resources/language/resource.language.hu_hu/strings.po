@@ -659,3 +659,11 @@ msgstr "nem sikerült menteni a Simkl-előzmények megőrzött másolatát"
 msgctxt "#32314"
 msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr "{0} már megnézett a Kodiban, ezért nem került át a Megnézendő listára"
+
+msgctxt "#32315"
+msgid "Retry for late ids (up to 30 seconds)"
+msgstr "Újrapróbálás késői azonosítókhoz (legfeljebb 30 másodperc)"
+
+msgctxt "#32316"
+msgid "Some add-ons add the TVDB/TMDB ids a few seconds after playback has started. While no id is available, the add-on looks for the ids again every second, for up to 30 seconds from the start of playback."
+msgstr "Egyes kiegészítők csak a lejátszás megkezdése után néhány másodperccel adják hozzá a TVDB/TMDB azonosítókat. Amíg nincs elérhető azonosító, a kiegészítő másodpercenként újra keresi azokat, a lejátszás kezdetétől legfeljebb 30 másodpercig."

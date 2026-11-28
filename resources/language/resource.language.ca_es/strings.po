@@ -659,3 +659,11 @@ msgstr "no s'ha pogut desar la còpia conservada de l'historial de Simkl"
 msgctxt "#32314"
 msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr "{0} ja està vist a Kodi, per això no s'ha mogut a «Per veure»"
+
+msgctxt "#32315"
+msgid "Retry for late ids (up to 30 seconds)"
+msgstr "Reintenta per a identificadors tardans (fins a 30 segons)"
+
+msgctxt "#32316"
+msgid "Some add-ons add the TVDB/TMDB ids a few seconds after playback has started. While no id is available, the add-on looks for the ids again every second, for up to 30 seconds from the start of playback."
+msgstr "Alguns complements afegeixen els identificadors de TVDB/TMDB uns segons després d'haver començat la reproducció. Mentre no hi hagi cap identificador disponible, el complement els torna a buscar cada segon, fins a 30 segons des de l'inici de la reproducció."

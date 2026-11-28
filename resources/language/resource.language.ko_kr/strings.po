@@ -659,3 +659,11 @@ msgstr "보관해 둔 Simkl 시청 기록 사본을 저장할 수 없습니다"
 msgctxt "#32314"
 msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr "{0}은(는) Kodi에서 이미 시청함 상태이므로 볼 예정으로 옮기지 않았습니다"
+
+msgctxt "#32315"
+msgid "Retry for late ids (up to 30 seconds)"
+msgstr "늦게 오는 ID 재시도(최대 30초)"
+
+msgctxt "#32316"
+msgid "Some add-ons add the TVDB/TMDB ids a few seconds after playback has started. While no id is available, the add-on looks for the ids again every second, for up to 30 seconds from the start of playback."
+msgstr "일부 애드온은 재생이 시작되고 몇 초 뒤에 TVDB/TMDB ID를 추가합니다. ID가 없는 동안 애드온은 재생 시작 후 최대 30초 동안 1초마다 ID를 다시 찾습니다."

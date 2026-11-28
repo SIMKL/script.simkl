@@ -10,6 +10,7 @@ import time
 import types
 
 sys.dont_write_bytecode = True
+sys.stdout.reconfigure(errors='backslashreplace')   # a pipe on Windows cannot show every name: it prints escaped, the run goes on
 PROFILE = tempfile.mkdtemp()
 SETTINGS = {}
 RPC = {}            # method -> result for the stubbed JSON-RPC
@@ -1119,6 +1120,130 @@ check('window ids: an end announced for an earlier playback leaves the current i
 WINDOW.clear()
 RPC.pop('Player.GetItem')
 RPC.pop('Player.GetActivePlayers')
+
+
+# --- late ids: with the option on, a stream that starts without ids is looked at again for 30 seconds, on the playing item only ---
+def late_ids_checks():
+    stream, following = 'http://box:8090/stream/a.mkv', 'plugin://plugin.video.x/play'
+    untagged = {'item': {'type': 'unknown', 'label': 'a.mkv', 'file': stream}}
+    matrix = {'item': {'type': 'movie', 'title': 'The Matrix', 'year': 1999, 'uniqueid': {'tmdb': '603'}, 'file': stream}}
+    looks = []          # the window argument of every identify() call
+    real_identify = playerlib.identify
+    playerlib.identify = lambda player, window=True: looks.append(window) or real_identify(player, window=window)
+    WINDOW.clear()
+    RPC['Player.GetActivePlayers'] = [{'playerid': 1, 'type': 'video'}]
+    RPC['Player.GetItem'] = untagged
+    sender = FakeSender()
+    player = FakePlayer(120.0, 6000.0, stream)
+    scrobbler = scr.Scrobbler(api=None, auth=auth_logged, player=player, sender=sender, history=fresh_queue(), marks=FakeMarks())
+
+    scrobbler.on_event(('av_started', 1))
+    session = scrobbler.session
+    scrobbler.tick(time.time() + 5)
+    check('late ids: with the option off a stream without ids is left alone at its first look and never looked at again', session.ignored and session.item is None and looks == [True])
+
+    SETTINGS['retry_late_ids'] = 'true'
+    del looks[:]
+    scrobbler.on_event(('av_started', 2))
+    session = scrobbler.session
+    scrobbler.tick(time.time())
+    check('late ids: with the option on it waits: nothing decided, nothing sent, no second look within the first second',
+          session.item is None and not session.ignored and session.path == stream and scrobbler.active() and looks == [True] and sender.jobs == [])
+    WINDOW['script.simkl.ids'] = '{"tmdb": "999"}'
+    scrobbler.tick(session.sampled_at + 1.5)
+    check('late ids: a later look leaves the home window out, so ids set there meanwhile (the next item\'s) are not taken for the stream that waits',
+          looks == [True, False] and session.item is None and not session.ignored and WINDOW.get('script.simkl.ids') == '{"tmdb": "999"}')
+    RPC['Player.GetItem'] = {'item': {'type': 'movie', 'title': 'B', 'file': following}}
+    player.path = following
+    scrobbler.on_event(('av_started', 3))
+    check('late ids: they stay for the next item, which its own first look names by them; nothing went out for the stream that waited',
+          session.closed and (scrobbler.session.item or {}).get('ids') == {'tmdb': '999'} and looks == [True, False, True] and sender.jobs == [] and kinds(scrobbler.history) == [])
+    scrobbler.on_event(('stopped', 3))
+    WINDOW.clear()
+    player.path = stream
+
+    del looks[:]
+    RPC['Player.GetItem'] = untagged
+    scrobbler.on_event(('av_started', 4))
+    session = scrobbler.session
+    session.created -= 5
+    RPC['Player.GetItem'] = matrix
+    scrobbler.tick(session.sampled_at + 1.5)
+    check('late ids: ids a helper puts on the playing item inside the 30 seconds start the tracking',
+          looks == [True, False] and (session.item or {}).get('ids') == {'tmdb': '603'} and session.path == stream and session.started and len(sender.jobs) == 1)
+    scrobbler.on_event(('stopped', 4))
+
+    RPC['Player.GetItem'] = untagged
+    scrobbler.on_event(('av_started', 5))
+    session = scrobbler.session
+    RPC['Player.GetItem'] = {'item': {'type': 'episode', 'season': 1, 'episode': 2, 'showtitle': 'S', 'title': 'E', 'file': stream, 'customproperties': {'script.simkl.ids': '{"tmdb": "1396"}'}}}
+    scrobbler.tick(session.sampled_at + 1.5)
+    item = session.item or {}
+    check('late ids: an episode is named the same way, by its season and number and the show ids in a script.simkl.ids property of the item',
+          item.get('kind') == 'episode' and item.get('ids') == {'tmdb': '1396'} and (item.get('season'), item.get('number')) == (1, 2))
+    scrobbler.on_event(('stopped', 5))
+
+    RPC['Player.GetItem'] = untagged
+    scrobbler.on_event(('av_started', 6))
+    session = scrobbler.session
+    sent = len(sender.jobs)
+    scrobbler.tick(session.created + 29)
+    waiting = session.item is None and not session.ignored
+    scrobbler.tick(session.created + 30.5)
+    check('late ids: after 30 seconds without ids the stream is left alone', waiting and session.ignored and session.item is None and len(sender.jobs) == sent)
+    scrobbler.on_event(('stopped', 6))
+
+    scrobbler.on_event(('av_started', 7))
+    session = scrobbler.session
+    RPC['Player.GetItem'] = {'item': {'type': 'movie', 'title': 'B', 'uniqueid': {'tmdb': '550'}, 'file': following}}
+    player.path = following
+    scrobbler.tick(session.sampled_at + 1.5)
+    check('late ids: a look that finds another file playing is not taken for the stream that waits', session.item is None and not session.ignored)
+    player.path = stream
+    RPC['Player.GetItem'] = {'item': {'type': 'unknown', 'label': 'a.mkv', 'file': stream, 'customproperties': {'script.simkl.exclude': 'true'}}}
+    scrobbler.tick(session.sampled_at + 1.5)
+    check('late ids: any reason other than missing ids ends the wait at once (here the item got script.simkl.exclude)', session.ignored and session.item is None)
+    scrobbler.on_event(('stopped', 7))
+
+    RPC['Player.GetItem'] = untagged
+    scrobbler.on_event(('av_started', 8))
+    session = scrobbler.session
+    sent = len(sender.jobs)
+    for event in (('paused', 8), ('seek', 8, 60000), ('resumed', 8), ('stopped', 8)):
+        scrobbler.on_event(event)
+    check('late ids: a pause, a seek and a stop while it waits send nothing and record nothing',
+          session.closed and len(sender.jobs) == sent and kinds(scrobbler.history) == [] and not scrobbler.active())
+
+    RPC['Player.GetItem'] = {'item': {'type': 'movie', 'id': 7, 'file': stream}}
+    RPC['VideoLibrary.GetMovieDetails'] = {'moviedetails': {'movieid': 7, 'title': 'Lib', 'year': 2001, 'uniqueid': {}, 'file': stream, 'runtime': 5400}}
+    scrobbler.on_event(('av_started', 9))
+    session = scrobbler.session
+    waiting = session.item is None and not session.ignored
+    scrobbler.tick(session.created + 30.5)
+    check('late ids: a library stream without ids gets its library identity when the wait ends, so Kodi\'s own watched bump is still not a mark',
+          waiting and session.ignored and scrobbler.is_open('movie', 7))
+    scrobbler.on_event(('stopped', 9))
+    RPC.pop('VideoLibrary.GetMovieDetails')
+
+    del looks[:]
+    RPC['Player.GetItem'] = matrix
+    scrobbler.on_event(('av_started', 10))
+    check('late ids: an item that has its ids at the start is identified at once, as with the option off', looks == [True] and (scrobbler.session.item or {}).get('ids') == {'tmdb': '603'})
+    scrobbler.on_event(('stopped', 10))
+    RPC['Player.GetItem'] = untagged
+    player.path = ''
+    scrobbler.on_event(('av_started', 11))
+    check('late ids: without a playing file to tell the playback by there is no wait', scrobbler.session.ignored)
+    scrobbler.on_event(('stopped', 11))
+
+    playerlib.identify = real_identify
+    SETTINGS.pop('retry_late_ids')
+    WINDOW.clear()
+    RPC.pop('Player.GetItem')
+    RPC.pop('Player.GetActivePlayers')
+
+
+late_ids_checks()
 
 # --- the Simkl log filter of the Advanced page (default.py) ---
 import importlib  # noqa: E402

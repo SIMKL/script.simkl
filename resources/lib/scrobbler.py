@@ -32,6 +32,8 @@ REWATCH_SHARE = 0.10
 # Up Next moves on from an episode near its end; a signal for a playback under this share is one some Up Next versions
 # send when their popup closes, after the next episode has started: not about that playback
 UPNEXT_MIN_PROGRESS = 50.0
+# some add-ons add the ids of a stream only after playback started: with the setting on, they are read again every second for this long from the start
+LATE_IDS_WINDOW = 30
 
 
 class Session:
@@ -145,7 +147,16 @@ class Scrobbler:
             session.ignored = True
             return
         self.auth.nudge()
+        path = self.player.playing_file()
         status, payload = playerlib.identify(self.player)
+        if (status == 'skip' and payload.startswith(playerlib.NO_IDS_REASONS) and path
+                and settings.get_bool(settings.RETRY_LATE_IDS)):
+            session.path = path
+            session.sampled_at = time.time()
+            return  # tick() looks again
+        self._track(session, status, payload)
+
+    def _track(self, session, status, payload):
         if status == 'skip':
             utils.log('not tracked: %s' % payload)
             session.ignored = True
@@ -163,7 +174,7 @@ class Scrobbler:
             return
         if session.library:
             session.siblings = playerlib.file_siblings(payload)
-        session.path = self.player.playing_file()
+        session.path = session.path or self.player.playing_file()
         session.paused = playerlib.is_paused()
         sample = self._sample(session)
         if sample:
@@ -228,6 +239,17 @@ class Scrobbler:
     def tick(self, now):
         session = self.session
         if session is None or session.closed:
+            return
+        if session.item is None and not session.ignored:
+            # still waiting for the ids of a stream
+            if now - session.created >= LATE_IDS_WINDOW:
+                self._track(session, 'skip', 'no ids in %d seconds' % LATE_IDS_WINDOW)
+            elif now - session.sampled_at >= SAMPLE_EVERY:
+                session.sampled_at = now
+                status, payload = playerlib.identify(self.player, window=False)
+                # if Kodi moved on meanwhile, the next item's av_started replaces this session
+                if self.player.playing_file() == session.path and not (status == 'skip' and payload.startswith(playerlib.NO_IDS_REASONS)):
+                    self._track(session, status, payload)
             return
         # a playback left alone is still sampled when it is a library item: whether Kodi will count it watched at its
         # stop, and so whether its own play-count bump is to be expected, only the position tells

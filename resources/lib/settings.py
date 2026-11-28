@@ -34,6 +34,7 @@ MIN_LENGTH = 'min-length'
 BUBBLE = 'bubble'
 RATE_PROMPT = 'rate_prompt'
 ALLOW_REWATCH = 'allow_rewatch'
+RETRY_LATE_IDS = 'retry_late_ids'
 SYNC_MARKS = 'sync_marks'
 SYNC_RATINGS = 'sync_ratings'
 

@@ -659,3 +659,11 @@ msgstr "не удалось сохранить копию истории Simkl"
 msgctxt "#32314"
 msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr "{0}: уже просмотрено в Kodi, поэтому не перенесено в «Буду смотреть»"
+
+msgctxt "#32315"
+msgid "Retry for late ids (up to 30 seconds)"
+msgstr "Повторять для запоздавших идентификаторов (до 30 секунд)"
+
+msgctxt "#32316"
+msgid "Some add-ons add the TVDB/TMDB ids a few seconds after playback has started. While no id is available, the add-on looks for the ids again every second, for up to 30 seconds from the start of playback."
+msgstr "Некоторые дополнения добавляют идентификаторы TVDB/TMDB только через несколько секунд после начала воспроизведения. Пока идентификатора нет, дополнение ищет его снова каждую секунду в течение 30 секунд с начала воспроизведения."

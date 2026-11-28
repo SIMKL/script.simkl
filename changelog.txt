@@ -1,3 +1,6 @@
+v 4.1.0
+- new option "Retry for late ids" on the Scrobbling page, off by default: a stream that starts without ids is looked at again every second for up to 30 seconds, for add-ons that put the ids on the playing item only after the playback has started
+
 v 4.0.0
 - new sign-in with a code on simkl.com/pin or a QR code for the phone (the old PIN login could hang forever); existing logins keep working, reconnect from the settings
 - real-time tracking: start, pause and stop are sent as they happen, the position is kept on Simkl when you stop early

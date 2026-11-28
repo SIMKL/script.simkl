@@ -659,3 +659,11 @@ msgstr "無法儲存 Simkl 觀看紀錄的保存副本"
 msgctxt "#32314"
 msgid "{0} is already watched in Kodi, so it was not moved to Plan to watch"
 msgstr "{0} 在 Kodi 中已觀看，因此未移至想看清單"
+
+msgctxt "#32315"
+msgid "Retry for late ids (up to 30 seconds)"
+msgstr "為延遲出現的 ID 重試（最多 30 秒）"
+
+msgctxt "#32316"
+msgid "Some add-ons add the TVDB/TMDB ids a few seconds after playback has started. While no id is available, the add-on looks for the ids again every second, for up to 30 seconds from the start of playback."
+msgstr "某些附加元件會在播放開始數秒後才加入 TVDB/TMDB ID。在沒有任何 ID 時，附加元件會從播放開始起最多 30 秒內每秒重新尋找一次。"

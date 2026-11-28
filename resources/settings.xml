@@ -161,6 +161,11 @@
           <default>false</default>
           <control type="toggle"/>
         </setting>
+        <setting id="retry_late_ids" type="boolean" label="32315" help="32316">
+          <level>0</level>
+          <default>false</default>
+          <control type="toggle"/>
+        </setting>
       </group>
       <group id="2">
         <setting id="sync_marks" type="boolean" label="32121" help="32122">
